@@ -1,5 +1,5 @@
 (executable
- (name PpxTest)
+ (name TestTo42Tester)
  (libraries ppx-lab)
  (preprocess
   (pps ppx-lab)))

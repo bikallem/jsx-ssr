@@ -1,0 +1,26 @@
+{
+  "name": "ppx-lab",
+  "version": "0.0.0",
+  "description": "PPX experiments in ocaml/reasonml.",
+  "esy": {
+    "build": "refmterr dune build -p #{self.name} -j4"
+  },
+  "scripts": {
+    "fmt": "esy dune build @fmt --auto-promote",
+    "test" : "esy dune runtest",
+    "clean": "esy dune clean"
+  },
+  "dependencies": {
+    "@esy-ocaml/reason": "*",
+    "@opam/ppx_tools_versioned": "5.2.2",
+    "@opam/ppxlib": "0.6.0",
+    "ocaml": "^4.7.0"
+  },
+  "devDependencies": { 
+    "@opam/merlin": "*",
+    "@opam/rtop": "3.4.0",
+    "@opam/utop": "*",
+    "refmterr": "*",
+    "@opam/dune": "*"
+  }
+}

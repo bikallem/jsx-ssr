@@ -1,0 +1,5 @@
+(executable
+ (name PpxTest)
+ (libraries ppx-lab)
+ (preprocess
+  (pps ppx-lab)))

@@ -2,11 +2,13 @@ open Ppxlib;
 
 let expr = (~loc, ~path as _) => Ast_builder.Default.eint(~loc, 42);
 
+let name = "test";
+
 let ext =
   Extension.declare(
-    "test",
+    name,
     Extension.Context.expression,
     Ast_pattern.(pstr(nil)),
     expr,
   );
-let () = Driver.register_transformation("test", ~extensions=[ext]);
+let () = Driver.register_transformation(name, ~extensions=[ext]);

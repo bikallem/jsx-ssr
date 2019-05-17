@@ -1,6 +1,6 @@
-let div = (~className, ~children as _, (), ()) =>
-  Printf.printf("div className=%s\n%!", className);
+let div = (~className as _, ~children as _, ()) => 43;
+/*     Printf.printf("div className=%s\n%!", className); */
 
 let d = <div className="test" />;
 
-d();
+print_endline(string_of_int(d));

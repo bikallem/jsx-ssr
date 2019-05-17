@@ -1,5 +1,11 @@
 (executable
  (name TestTo42Tester)
+ (modules TestTo42Tester)
  (libraries ppx-lab)
  (preprocess
   (pps ppx-lab)))
+
+(executable
+ (name Pp)
+ (modules Pp)
+ (libraries ppx-lab ppxlib))

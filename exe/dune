@@ -9,3 +9,10 @@
  (name Pp)
  (modules Pp)
  (libraries ppx-lab ppxlib))
+
+(executable
+ (name JsxTester)
+ (modules JsxTester)
+ (libraries ppx-lab)
+ (preprocess
+  (pps ppx-lab)))

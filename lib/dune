@@ -1,5 +1,5 @@
 (library
  (name ppx_lab)
  (public_name ppx-lab)
- (libraries ppxlib)
+ (libraries ppxlib ocaml-migrate-parsetree)
  (kind ppx_rewriter))

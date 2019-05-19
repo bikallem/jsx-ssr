@@ -1,5 +1,5 @@
 {
-  "checksum": "961e626afea4607e7b0686cfc90a04b0",
+  "checksum": "ba8b825825293737fce853006ad97d3e",
   "root": "ppx-lab@link-dev:./package.json",
   "node": {
     "refmterr@3.1.10@d41d8cd9": {
@@ -32,6 +32,7 @@
       "dependencies": [
         "ocaml@4.7.1004@d41d8cd9", "@opam/ppxlib@opam:0.6.0@3500c1bb",
         "@opam/ppx_tools_versioned@opam:5.2.2@34409c89",
+        "@opam/ocaml-migrate-parsetree@opam:1.3.0@db26ff47",
         "@esy-ocaml/reason@3.4.0@d41d8cd9"
       ],
       "devDependencies": [

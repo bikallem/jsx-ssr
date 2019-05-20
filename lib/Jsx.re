@@ -12,13 +12,13 @@ let mapper = (_, _) => {
   let expr = (mapper, e) => {
     switch (e) {
     | {
-        pexp_attributes: [({txt: "JSX", _}, PStr([]))],
+        pexp_attributes: [({txt: "JSX", loc: _}, PStr([]))],
         pexp_desc:
           Pexp_apply(
-            {pexp_desc: Pexp_ident({txt: Lident(html_tag), _}), _},
+            {pexp_desc: Pexp_ident({txt: Lident(html_tag), loc: _}), _},
             _args,
           ),
-        _,
+        pexp_loc: _,
       } =>
       Ast_helper.Exp.constant(Pconst_string(html_tag, None))
     | _ => default_mapper.expr(mapper, e)

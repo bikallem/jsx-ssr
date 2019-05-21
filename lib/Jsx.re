@@ -2,7 +2,6 @@
 
 open Migrate_parsetree;
 open Ast_406;
-open JsxRuntime;
 
 let ocaml_version = Versions.ocaml_406;
 

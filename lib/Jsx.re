@@ -2,12 +2,14 @@
 
 open Migrate_parsetree;
 open Ast_406;
+open JsxRuntime;
 
 let ocaml_version = Versions.ocaml_406;
 
 let mapper = (_, _) => {
   open Ast_mapper;
   open Parsetree;
+  open Ast_helper;
 
   let expr = (mapper, e) => {
     switch (e) {
@@ -20,7 +22,7 @@ let mapper = (_, _) => {
           ),
         pexp_loc: _,
       } =>
-      Ast_helper.Exp.constant(Pconst_string(html_tag, None))
+      Exp.constant(Pconst_string(html_tag, None))
     | _ => default_mapper.expr(mapper, e)
     };
   };
@@ -28,4 +30,4 @@ let mapper = (_, _) => {
   {...default_mapper, expr};
 };
 
-let () = Driver.register(~name="ppx-jsx", ocaml_version, mapper);
+let () = Driver.register(~name="JSX", ocaml_version, mapper);

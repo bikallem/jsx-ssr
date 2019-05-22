@@ -15,12 +15,17 @@ let createElement = (tag, attributes, ~children=[], ()) => {
   Element(tag, attributes, children);
 };
 
-module ViewBuilder: {let render: htmlElement => string;} = {
+module ViewBuilder: {
+  let renderHtmlDocument: htmlElement => string;
+  let renderHtmlElement: htmlElement => string;
+} = {
   let (+=) = (buf, text) => {
     Buffer.add_string(buf, text);
     buf;
   };
   let (+!) = (buf, text) => Buffer.add_string(buf, text);
+
+  let bufSize = 1024;
 
   let builder = {
     as self;
@@ -38,23 +43,29 @@ module ViewBuilder: {let render: htmlElement => string;} = {
         buf +! ">";
       };
     };
-    pub render = (buf, htmlElement) => {
-      switch (htmlElement) {
+    pub renderElement = (buf, element) => {
+      switch (element) {
       | Text(s) => buf +! s
       | Element(tag, attributes, children) =>
         self#buildElement(buf, tag, attributes);
-        List.iter(elem => self#render(buf, elem), children);
+        List.iter(elem => self#renderElement(buf, elem), children);
       };
     };
-    pub renderHtmlDocument = htmlElement => {
-      let buf = Buffer.create(1024);
+    pub renderHtmlDocument = element => {
+      let buf = Buffer.create(bufSize);
       buf +! "<!DOCTYPE html>";
-      self#render(buf, htmlElement);
+      self#renderElement(buf, element);
+      Buffer.contents(buf);
+    };
+    pub renderHtmlElement = element => {
+      let buf = Buffer.create(bufSize);
+      self#renderElement(buf, element);
       Buffer.contents(buf);
     }
   };
 
-  let render = builder#renderHtmlDocument;
+  let renderHtmlDocument = builder#renderHtmlDocument;
+  let renderHtmlElement = builder#renderHtmlElement;
 };
 
 /* Sample DOM element creation of the following html element.
@@ -91,4 +102,4 @@ let block1 =
     (),
   );
 
-let () = Printf.printf("%s", ViewBuilder.render(block1));
+let () = Printf.printf("%s", ViewBuilder.renderHtmlDocument(block1));

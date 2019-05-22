@@ -1,25 +1,20 @@
 type htmlElement =
   | Text(string)
-  | Normal(string, list(attribute), list(htmlElement))
+  | Element(string, list(attribute), list(htmlElement))
 
 and attribute =
   | KeyValue(string, string)
   | Boolean(string);
 
 let str = txt => Text(txt);
-let attr = (key, value) => KeyValue(key, value);
+let attr = ((key, value)) => KeyValue(key, value);
 let flag = key => Boolean(key);
 
 let createElement = (tag, attributes, ~children=[], ()) => {
-  let attributes =
-    List.map(((key, value)) => attr(key, value), attributes);
-  Normal(tag, attributes, children);
+  let attributes = List.map(attr, attributes);
+  Element(tag, attributes, children);
 };
 
-/**
-  * WIP html renderer. For the moment it just returns a parent node tag name.
-  * TBC.
-  */
 module ViewBuilder = {
   let (+=) = (buf, text) => {
     Buffer.add_string(buf, text);
@@ -27,37 +22,41 @@ module ViewBuilder = {
   };
   let (+!) = (buf, text) => Buffer.add_string(buf, text);
 
-  let render = htmlElement => {
-    let buildHtmlElement = (buf, tag, attributes) => {
-      Printf.(
-        switch (attributes) {
-        | [] => buf += "<" += tag +! ">"
-        | _ =>
-          buf += "<" +! tag;
-          List.iter(
-            attr =>
-              switch (attr) {
-              | KeyValue(k, v) => buf += " " += k += "=\"" += v +! "\""
-              | Boolean(k) => buf += " " +! k
-              },
-            attributes,
-          );
-          buf +! ">";
-        }
-      );
+  let builder = {
+    as self;
+    pub buildElement = (buf, tag, attributes) => {
+      switch (attributes) {
+      | [] => buf += "<" += tag +! ">"
+      | _ =>
+        buf += "<" +! tag;
+        List.iter(
+          fun
+          | KeyValue(k, v) => buf += " " += k += "=\"" += v +! "\""
+          | Boolean(k) => buf += " " +! k,
+          attributes,
+        );
+        buf +! ">";
+      };
     };
-
-    let buildNormalTag = (buf, tag, attributes, children) => {
-      buildHtmlElement(buf, tag, attributes);
-      List.iter((child =>  
+    pub render = (buf, htmlElement) => {
+      switch (htmlElement) {
+      | Text(s) => buf +! s
+      | Element(tag, attributes, children) =>
+        self#buildElement(buf, tag, attributes);
+        List.iter(elem => self#render(buf, elem), children);
+      };
     };
-
-    switch (htmlElement) {
-    | Text(s) => s
-    | Normal(tag, _, _) => tag
-    };
+    pub renderHtmlDocument = htmlElement => {
+      let buf = Buffer.create(1024);
+      buf +! "<!DOCTYPE html>";
+      self#render(buf, htmlElement);
+      Buffer.contents(buf);
+    }
   };
+
+  let render = builder#renderHtmlDocument;
 };
+
 /* Sample DOM element creation of the following html element.
       <div id="container">
         <input value="foo" type="text"/>
@@ -92,4 +91,4 @@ let block1 =
     (),
   );
 
-let () = Printf.printf("%B", render(block1) == "div");
+let () = Printf.printf("%s", ViewBuilder.render(block1));

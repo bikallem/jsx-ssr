@@ -15,7 +15,7 @@ let createElement = (tag, attributes, ~children=[], ()) => {
   Element(tag, attributes, children);
 };
 
-module ViewBuilder = {
+module ViewBuilder: {let render: htmlElement => string;} = {
   let (+=) = (buf, text) => {
     Buffer.add_string(buf, text);
     buf;

@@ -20,13 +20,44 @@ let createElement = (tag, attributes, ~children=[], ()) => {
   * WIP html renderer. For the moment it just returns a parent node tag name.
   * TBC.
   */
-let render: htmlElement => string =
-  htmlElement =>
+module ViewBuilder = {
+  let (+=) = (buf, text) => {
+    Buffer.add_string(buf, text);
+    buf;
+  };
+  let (+!) = (buf, text) => Buffer.add_string(buf, text);
+
+  let render = htmlElement => {
+    let buildHtmlElement = (buf, tag, attributes) => {
+      Printf.(
+        switch (attributes) {
+        | [] => buf += "<" += tag +! ">"
+        | _ =>
+          buf += "<" +! tag;
+          List.iter(
+            attr =>
+              switch (attr) {
+              | KeyValue(k, v) => buf += " " += k += "=\"" += v +! "\""
+              | Boolean(k) => buf += " " +! k
+              },
+            attributes,
+          );
+          buf +! ">";
+        }
+      );
+    };
+
+    let buildNormalTag = (buf, tag, attributes, children) => {
+      buildHtmlElement(buf, tag, attributes);
+      List.iter((child =>  
+    };
+
     switch (htmlElement) {
     | Text(s) => s
     | Normal(tag, _, _) => tag
     };
-
+  };
+};
 /* Sample DOM element creation of the following html element.
       <div id="container">
         <input value="foo" type="text"/>

@@ -6,14 +6,12 @@ and attribute =
   | KeyValue(string, string)
   | Boolean(string);
 
-let str = txt => Text(txt);
-let attr = ((key, value)) => KeyValue(key, value);
+let text = txt => Text(txt);
+let attr = (key, value) => KeyValue(key, value);
 let flag = key => Boolean(key);
 
-let createElement = (tag, attributes, ~children=[], ()) => {
-  let attributes = List.map(attr, attributes);
+let element = (tag, attributes, ~children=[], ()) =>
   Element(tag, attributes, children);
-};
 
 module ViewBuilder: {
   let renderHtmlDocument: htmlElement => string;
@@ -76,29 +74,30 @@ module ViewBuilder: {
         <button onclick="alert('Hello world!')">Click Me!</button>
       </div>;
    */
-let input =
-  createElement("input", [("value", "foo"), ("type", "text")], ());
-let a =
-  createElement("a", [("href", "/bar")], ~children=[str("bar")], ());
+let input1 =
+  element("input", [attr("value", "foo"), attr("type", "text")], ());
+let input2 =
+  element("input", [attr("type", "checkbox"), flag("checked")], ());
+let a = element("a", [attr("href", "/bar")], ~children=[text("bar")], ());
 let span =
-  createElement(
+  element(
     "span",
-    [("onclick", "myFunction('james')")],
-    ~children=[str("Click Me!")],
+    [attr("onclick", "myFunction('james')")],
+    ~children=[text("Click Me!")],
     (),
   );
 let button =
-  createElement(
+  element(
     "button",
-    [("onclick", "alert('Hello World')")],
-    ~children=[str("Click Me!")],
+    [attr("onclick", "alert('Hello World')")],
+    ~children=[text("Click Me!")],
     (),
   );
 let block1 =
-  createElement(
+  element(
     "div",
-    [("id", "container1")],
-    ~children=[input, a, span, button],
+    [attr("id", "container1")],
+    ~children=[input1, input2, a, span, button],
     (),
   );
 

@@ -6,10 +6,10 @@ and attribute =
   | KeyValue(string, string)
   | Boolean(string);
 
-let text = txt => Text(txt);
 let attr = (key, value) => KeyValue(key, value);
 let flag = key => Boolean(key);
 
+let text = txt => Text(txt);
 let element = (tag, attributes, ~children=[], ()) =>
   Element(tag, attributes, children);
 

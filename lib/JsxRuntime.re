@@ -27,7 +27,7 @@ module ViewBuilder: {
 
   let builder = {
     as self;
-    pub buildElement = (buf, tag, attributes) => {
+    pub buildElementTag = (buf, tag, attributes) => {
       switch (attributes) {
       | [] => buf += "<" += tag +! ">"
       | _ =>
@@ -41,23 +41,23 @@ module ViewBuilder: {
         buf +! ">";
       };
     };
-    pub renderElement = (buf, element) => {
+    pub buildElement = (buf, element) => {
       switch (element) {
       | Text(s) => buf +! s
       | Element(tag, attributes, children) =>
-        self#buildElement(buf, tag, attributes);
-        List.iter(elem => self#renderElement(buf, elem), children);
+        self#buildElementTag(buf, tag, attributes);
+        List.iter(elem => self#buildElement(buf, elem), children);
       };
     };
     pub renderHtmlDocument = element => {
       let buf = Buffer.create(bufSize);
       buf +! "<!DOCTYPE html>";
-      self#renderElement(buf, element);
+      self#buildElement(buf, element);
       Buffer.contents(buf);
     };
     pub renderHtmlElement = element => {
       let buf = Buffer.create(bufSize);
-      self#renderElement(buf, element);
+      self#buildElement(buf, element);
       Buffer.contents(buf);
     }
   };

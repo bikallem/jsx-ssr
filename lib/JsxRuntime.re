@@ -101,4 +101,4 @@ let block1 =
     (),
   );
 
-let () = Printf.printf("%s", ViewBuilder.renderHtmlDocument(block1));
+/* let () = Printf.printf("%s", ViewBuilder.renderHtmlDocument(block1)); */

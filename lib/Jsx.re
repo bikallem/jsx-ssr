@@ -8,7 +8,7 @@ let ocaml_version = Versions.ocaml_406;
 let mapper = (_, _) => {
   open Ast_mapper;
   open Parsetree;
-  open Ast_helper;
+  open Ast_helper; 
 
   let expr = (mapper, e) => {
     switch (e) {
@@ -21,7 +21,8 @@ let mapper = (_, _) => {
           ),
         pexp_loc: _,
       } =>
-      Exp.constant(Pconst_string(html_tag, None))
+      /* Exp.constant(Pconst_string(html_tag, None)) */
+      [%expr [%e Exp.constant(Pconst_string(html_tag, None))]]        
     | _ => default_mapper.expr(mapper, e)
     };
   };

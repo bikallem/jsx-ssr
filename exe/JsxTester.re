@@ -6,7 +6,7 @@ open Ppx_lab;
 
 let testAttr = "test";
 
-let d = <div className=testAttr />;
+let d = <div className=testAttr testcol2=232 />;
 
 print_endline(Html.renderHtmlDocument(d)); /* div */
 

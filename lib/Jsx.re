@@ -22,21 +22,20 @@ let map_attributes = attributes => {
         | _ => false
       );
       List.exists(isRawLiteral, pexp_attributes) ? str_expr(ident) : value;
-    | _ => str_expr("hello")
+    | _ => value
     };
 
   List.fold_right(
     (attr, acc) =>
       switch (attr) {
       | (Nolabel, [%expr ()]) => acc
-      | (Nolabel, _) =>
-        failwith("Invalid attribute: Nolable not supported yet")
-      | (Optional(_), _) => failwith("Optional arg not supported yet")
-      | (Labelled(lbl), value) =>
-        let key = str_expr(lbl);
+      | (Labelled("children"), _) => acc
+      | (Labelled(propName), value) =>
+        let key = str_expr(propName);
         let value = map_value(value);
         %expr
         [Html.attr([%e key], [%e value]), ...[%e acc]];
+      | _ => failwith("Invalid attribute")
       },
     attributes,
     [%expr []],

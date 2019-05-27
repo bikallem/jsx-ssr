@@ -4,7 +4,9 @@
    let div = (~className as _, ~children as _, ()) => 43; */
 open Ppx_lab;
 
-let d = <div className="test" />;
+let testAttr = "test";
+
+let d = <div className=testAttr />;
 
 print_endline(Html.renderHtmlDocument(d)); /* div */
 

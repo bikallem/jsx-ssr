@@ -12,34 +12,34 @@ let ocaml_version = Versions.ocaml_407;
 
 let str_expr = s => [%expr [%e Exp.constant(Pconst_string(s, None))]];
 
-let map_attribute = attributes => {
+let map_attributes = attributes => {
   let map_value = value =>
     switch (value) {
     | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} =>
-      if (List.exists(
-            fun
-            | ({txt: "reason.raw_literal", _}, _) => true
-            | _ => false,
-            pexp_attributes,
-          )) {
-        str_expr(ident);
-      } else {
-        value;
-      }
+      let isRawLiteral = (
+        fun
+        | ({txt: "reason.raw_literal", _}, _) => true
+        | _ => false
+      );
+      List.exists(isRawLiteral, pexp_attributes) ? str_expr(ident) : value;
     | _ => str_expr("hello")
     };
 
-  List.map(
-    fun
-    | (Nolabel, _) => failwith("Nolabel arg not supported yet")
-    | (Optional(_), _) => failwith("Optional arg not supported yet")
-    | (Labelled(lbl), value) => {
+  List.fold_right(
+    (attr, acc) =>
+      switch (attr) {
+      | (Nolabel, [%expr ()]) => acc
+      | (Nolabel, _) =>
+        failwith("Invalid attribute: Nolable not supported yet")
+      | (Optional(_), _) => failwith("Optional arg not supported yet")
+      | (Labelled(lbl), value) =>
         let key = str_expr(lbl);
         let value = map_value(value);
         %expr
-        Html.attr([%e key], [%e value]);
+        [Html.attr([%e key], [%e value]), ...[%e acc]];
       },
     attributes,
+    [%expr []],
   );
 };
 
@@ -51,12 +51,13 @@ let mapper = (_, _) => {
         pexp_desc:
           Pexp_apply(
             {pexp_desc: Pexp_ident({txt: Lident(html_tag), loc: _}), _},
-            _args,
+            args,
           ),
         pexp_loc: _,
       } =>
+      let attributes = map_attributes(args);
       %expr
-      Html.element([%e str_expr(html_tag)], [], ())
+      Html.element([%e str_expr(html_tag)], [%e attributes], ());
     | _ => default_mapper.expr(mapper, e)
     };
   };

@@ -13,7 +13,7 @@ let ocaml_version = Versions.ocaml_407;
 let str_expr = s => [%expr [%e Exp.constant(Pconst_string(s, None))]];
 
 let map_attributes = attributes => {
-  let rec map_value = value =>
+  let map_value = value =>
     switch (value) {
     | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} =>
       let isRawLiteral = (
@@ -22,18 +22,17 @@ let map_attributes = attributes => {
         | _ => false
       );
       List.exists(isRawLiteral, pexp_attributes) ? str_expr(ident) : value;
-    | {pexp_desc: Pexp_constant(_), _} as c => map_constant(c)
-    | _ => value
-    }
-
-  and map_constant = const => {
-    switch (const) {
-    | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} =>
+    | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c =>
       %expr
-      string_of_int([%e const])
-    | _ => const
+      string_of_int([%e c])
+    | {pexp_desc: Pexp_constant(Pconst_char(_)), _} as c =>
+      %expr
+      String.make(1, [%e c])
+    | {pexp_desc: Pexp_constant(Pconst_float(_)), _} as c =>
+      %expr
+      string_of_float([%e c])
+    | _ => value
     };
-  };
 
   List.fold_right(
     (attr, acc) =>

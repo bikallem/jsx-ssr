@@ -1,4 +1,4 @@
-/* This ppx just converts the given jsx into a html tag name expression. */
+/* This ppx converts the given jsx into a htmlElement instance. */
 
 open Migrate_parsetree;
 open Ast_407;

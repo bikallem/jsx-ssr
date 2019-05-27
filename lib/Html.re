@@ -13,10 +13,7 @@ let text = txt => Text(txt);
 let element = (tag, attributes, ~children=[], ()) =>
   Element(tag, attributes, children);
 
-module ViewBuilder: {
-  let renderHtmlDocument: htmlElement => string;
-  let renderHtmlElement: htmlElement => string;
-} = {
+module ViewBuilder = {
   let (+=) = (buf, text) => {
     Buffer.add_string(buf, text);
     buf;
@@ -61,10 +58,10 @@ module ViewBuilder: {
       Buffer.contents(buf);
     }
   };
-
-  let renderHtmlDocument = builder#renderHtmlDocument;
-  let renderHtmlElement = builder#renderHtmlElement;
 };
+
+let renderHtmlDocument = ViewBuilder.builder#renderHtmlDocument;
+let renderHtmlElement = ViewBuilder.builder#renderHtmlElement;
 
 /* Sample DOM element creation of the following html element.
       <div id="container">

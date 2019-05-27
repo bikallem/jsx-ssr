@@ -43,7 +43,10 @@ module ViewBuilder = {
       | Text(s) => buf +! s
       | Element(tag, attributes, children) =>
         self#buildElementTag(buf, tag, attributes);
-        List.iter(elem => self#buildElement(buf, elem), children);
+        switch (children) {
+        | [] => buf +! Printf.sprintf("</%s>", tag)
+        | _ => List.iter(elem => self#buildElement(buf, elem), children)
+        };
       };
     };
     pub renderHtmlDocument = element => {

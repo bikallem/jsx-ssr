@@ -47,16 +47,16 @@ and buildElement = (buf, element) => {
     | _ => List.iter(elem => buildElement(buf, elem), children)
     };
   };
-}
+};
 
-and renderHtmlDocument = element => {
+let renderHtmlDocument = element => {
   let buf = Buffer.create(bufSize);
   buf +! "<!DOCTYPE html>";
   buildElement(buf, element);
   Buffer.contents(buf);
-}
+};
 
-and renderHtmlElement = element => {
+let renderHtmlElement = element => {
   let buf = Buffer.create(bufSize);
   buildElement(buf, element);
   Buffer.contents(buf);

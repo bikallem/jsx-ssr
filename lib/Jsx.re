@@ -51,6 +51,8 @@ let map_attributes = attributes => {
   );
 };
 
+let map_children = expr => expr;
+
 let mapper = (_, _) => {
   let expr = (mapper, e) => {
     switch (e) {
@@ -64,8 +66,23 @@ let mapper = (_, _) => {
         pexp_loc: _,
       } =>
       let attributes = map_attributes(args);
+      let children =
+        List.find(
+          fun
+          | (Labelled("children"), _) => true
+          | _ => false,
+          args,
+        )
+        |> snd
+        |> map_children;
+
       %expr
-      Html.element([%e str_expr(html_tag)], [%e attributes], ());
+      Html.element(
+        [%e str_expr(html_tag)],
+        [%e attributes],
+        ~children=[%e default_mapper.expr(mapper, children)],
+        (),
+      );
     | _ => default_mapper.expr(mapper, e)
     };
   };

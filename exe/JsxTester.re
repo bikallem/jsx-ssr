@@ -40,16 +40,17 @@ let block1 = {
   );
 };
 
-/* let () = Printf.printf("%s", ViewBuilder.renderHtmlDocument(block1)); */
+print_endline(Html.renderHtmlDocument(block1));
 
 let testAttr = "test";
 
 let strAttr = "hello3";
 
-let d = <div className=testAttr testcol2=232 test3='c' test4=123.33 strAttr />;
+let d = <div className=testAttr testcol2=232 test3='c' test4=123.33 strAttr><p></p></div>;
 
 print_endline(Html.renderHtmlDocument(d));
 
 let e = <span className="test2" />;
 
 print_endline(Html.renderHtmlDocument(e));
+

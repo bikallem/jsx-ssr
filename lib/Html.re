@@ -44,7 +44,9 @@ and buildElement = (buf, element) => {
     buildElementTag(buf, tag, attributes);
     switch (children) {
     | [] => buf +! Printf.sprintf("</%s>", tag)
-    | _ => List.iter(elem => buildElement(buf, elem), children)
+    | _ =>
+      List.iter(elem => buildElement(buf, elem), children);
+      buf +! Printf.sprintf("</%s>", tag);
     };
   };
 };

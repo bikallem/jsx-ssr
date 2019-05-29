@@ -55,7 +55,6 @@ let rec map_children =
   fun
   | {
       pexp_desc:
-        [@implicit_arity]
         Pexp_construct(
           {txt: Lident("::"), _} as cons,
           Some({pexp_desc: Pexp_tuple(tuple), _} as a),

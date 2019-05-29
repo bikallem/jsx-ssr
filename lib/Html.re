@@ -38,15 +38,16 @@ let rec buildElementTag = (buf, tag, attributes) => {
 }
 
 and buildElement = (buf, element) => {
+  let closeTag = (buf, tag) => buf += "</" += tag +! ">";
   switch (element) {
   | Text(s) => buf +! s
   | Element(tag, attributes, children) =>
     buildElementTag(buf, tag, attributes);
     switch (children) {
-    | [] => buf +! Printf.sprintf("</%s>", tag)
+    | [] => closeTag(buf, tag)
     | _ =>
       List.iter(elem => buildElement(buf, elem), children);
-      buf +! Printf.sprintf("</%s>", tag);
+      closeTag(buf, tag);
     };
   };
 };

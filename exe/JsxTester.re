@@ -49,6 +49,8 @@ let strAttr = "hello3";
 let d =
   <div className=testAttr testcol2=232 test3='c' test4=123.33 strAttr>
     {Html.text("hello")}
+    {Html.int(1234)}
+    {Html.float(1234.)}
     <p />
   </div>;
 

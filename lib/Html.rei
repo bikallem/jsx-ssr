@@ -7,6 +7,7 @@ let attr: (string, string) => attribute;
 let flag: string => attribute;
 
 let text: string => htmlElement;
+let char: char => htmlElement;
 let int: int => htmlElement;
 let float: float => htmlElement;
 let element:

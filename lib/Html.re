@@ -10,6 +10,7 @@ let attr = (key, value) => KeyValue(key, value);
 let flag = key => Boolean(key);
 
 let text = txt => Text(txt);
+let char = char => text @@ String.make(1, char);
 let int = int => text @@ string_of_int(int);
 let float = float => text @@ string_of_float(float);
 let element = (tag, attributes, ~children=[], ()) =>

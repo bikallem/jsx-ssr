@@ -46,13 +46,16 @@ let testAttr = "test";
 
 let strAttr = "hello3";
 
-let d =
-  <div className=testAttr testcol2=232 test3='c' test4=123.33 strAttr>
-    {Html.text("hello")}
-    {Html.int(1234)}
-    {Html.float(1234.)}
-    <p />
-  </div>;
+let d = {
+  Html.(
+    <div className=testAttr testcol2=232 test3='c' test4=123.33 strAttr>
+      {text("hello")}
+      {int(1234)}
+      {float(1234.)}
+      <p />
+    </div>
+  );
+};
 
 print_endline(Html.renderHtmlDocument(d));
 

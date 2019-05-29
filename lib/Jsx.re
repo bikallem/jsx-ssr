@@ -12,28 +12,28 @@ let ocaml_version = Versions.ocaml_407;
 
 let str_expr = s => [%expr [%e Exp.constant(Pconst_string(s, None))]];
 
-let map_attributes = attributes => {
-  let map_value = value =>
-    switch (value) {
-    | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} =>
-      let isRawLiteral = (
-        fun
-        | ({txt: "reason.raw_literal", _}, _) => true
-        | _ => false
-      );
-      List.exists(isRawLiteral, pexp_attributes) ? str_expr(ident) : value;
-    | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c =>
-      %expr
-      string_of_int([%e c])
-    | {pexp_desc: Pexp_constant(Pconst_char(_)), _} as c =>
-      %expr
-      String.make(1, [%e c])
-    | {pexp_desc: Pexp_constant(Pconst_float(_)), _} as c =>
-      %expr
-      string_of_float([%e c])
-    | _ => value
-    };
+let map_constant = value =>
+  switch (value) {
+  | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} =>
+    let isRawLiteral = (
+      fun
+      | ({txt: "reason.raw_literal", _}, _) => true
+      | _ => false
+    );
+    List.exists(isRawLiteral, pexp_attributes) ? str_expr(ident) : value;
+  | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c =>
+    %expr
+    string_of_int([%e c])
+  | {pexp_desc: Pexp_constant(Pconst_char(_)), _} as c =>
+    %expr
+    String.make(1, [%e c])
+  | {pexp_desc: Pexp_constant(Pconst_float(_)), _} as c =>
+    %expr
+    string_of_float([%e c])
+  | _ => value
+  };
 
+let map_attributes = attributes => {
   List.fold_right(
     (attr, acc) =>
       switch (attr) {
@@ -41,7 +41,7 @@ let map_attributes = attributes => {
       | (Labelled("children"), _) => acc
       | (Labelled(propName), value) =>
         let key = str_expr(propName);
-        let value = map_value(value);
+        let value = map_constant(value);
         %expr
         [Html.attr([%e key], [%e value]), ...[%e acc]];
       | _ => failwith("Invalid attribute")
@@ -51,7 +51,34 @@ let map_attributes = attributes => {
   );
 };
 
-let map_children = expr => expr;
+let rec map_children =
+  fun
+  | {
+      pexp_desc:
+        [@implicit_arity]
+        Pexp_construct(
+          {txt: Lident("::"), _} as cons,
+          Some({pexp_desc: Pexp_tuple(tuple), _} as a),
+        ),
+      _,
+    } as e => {
+      let tuple =
+        switch (tuple) {
+        | [{pexp_desc: Pexp_constant(_), _} as car, cdr] => [
+            map_constant(car),
+            map_children(cdr),
+          ]
+        | [car, cdr] => [car, map_children(cdr)]
+        | x => x
+        };
+
+      {
+        ...e,
+        pexp_desc:
+          Pexp_construct(cons, Some({...a, pexp_desc: Pexp_tuple(tuple)})),
+      };
+    }
+  | x => x;
 
 let mapper = (_, _) => {
   let expr = (mapper, e) => {

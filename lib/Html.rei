@@ -1,3 +1,4 @@
+/* Html module represents a HtmlJSX view engine. */
 type htmlElement;
 
 type attribute;

@@ -53,6 +53,12 @@ let d = {
       {char('c')}
       {int(1234)}
       {float(1234.)}
+      123
+      "hello world"
+      "&nbsp;"
+      1234.0
+      'Z'
+      {text(strAttr)}
       <p />
     </div>
   );

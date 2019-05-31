@@ -40,16 +40,21 @@ let rec buildElementTag = (buf, tag, attributes) => {
   };
 }
 
-and buildElement = (buf, element) => {
-  let closeTag = (buf, tag) => buf += "</" += tag +! ">";
+and buildElement = (indentLevel, buf, element) => {
+  let indentSize = 4;
+  let sp = String.make(indentSize * indentLevel, ' ');
+  let closeTag = (buf, tag) => buf += "</" += tag +! ">\n";
+
   switch (element) {
-  | Text(s) => buf +! s
+  | Text(s) => buf += sp += s +! "\n"
   | Element(tag, attributes, children) =>
-    buildElementTag(buf, tag, attributes);
+    buildElementTag(buf += sp, tag, attributes);
     switch (children) {
     | [] => closeTag(buf, tag)
     | _ =>
-      List.iter(elem => buildElement(buf, elem), children);
+      buf +! "\n";
+      List.iter(elem => buildElement(indentLevel + 1, buf, elem), children);
+      buf +! sp;
       closeTag(buf, tag);
     };
   };
@@ -57,13 +62,13 @@ and buildElement = (buf, element) => {
 
 let renderHtmlDocument = element => {
   let buf = Buffer.create(bufSize);
-  buf +! "<!DOCTYPE html>";
-  buildElement(buf, element);
+  buf +! "<!DOCTYPE html>\n";
+  buildElement(0, buf, element);
   Buffer.contents(buf);
 };
 
 let renderHtmlElement = element => {
   let buf = Buffer.create(bufSize);
-  buildElement(buf, element);
+  buildElement(0, buf, element);
   Buffer.contents(buf);
 };

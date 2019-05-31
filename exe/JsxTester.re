@@ -59,7 +59,7 @@ let d = {
       1234.0
       'Z'
       {text(strAttr)}
-      <span class_=""><p>"hello"</p></span>
+      <span class_=""> <p> "hello" </p> </span>
     </div>
   );
 };

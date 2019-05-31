@@ -46,23 +46,20 @@ let testAttr = "test";
 
 let strAttr = "hello3";
 
-let d = {
-  Html.(
-    <div className=testAttr testcol2=232 test3='c' test4=123.33 strAttr>
-      {text("hello")}
-      {char('c')}
-      {int(1234)}
-      {float(1234.)}
-      123
-      "hello world"
-      "&nbsp;"
-      1234.0
-      'Z'
-      {text(strAttr)}
-      <span class_=""> <p> "hello" </p> </span>
-    </div>
-  );
-};
+let d =
+  <div className=testAttr testcol2=232 test3='c' test4=123.33 strAttr>
+    {Html.text("hello")}
+    {Html.char('c')}
+    {Html.int(1234)}
+    {Html.float(1234.)}
+    123
+    "hello world"
+    "&nbsp;"
+    1234.0
+    'Z'
+    {Html.text(strAttr)}
+    <span class_=""> <p> "hello" </p> </span>
+  </div>;
 
 print_endline(Html.renderHtmlDocument(d));
 

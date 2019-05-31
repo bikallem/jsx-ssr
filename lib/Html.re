@@ -1,6 +1,6 @@
-type htmlElement =
+type t =
   | Text(string)
-  | Element(string, list(attribute), list(htmlElement))
+  | Element(string, list(attribute), list(t))
 
 and attribute =
   | KeyValue(string, string)

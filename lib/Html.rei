@@ -1,18 +1,16 @@
 /* Html module represents a HtmlJSX view engine. */
-type htmlElement;
+type t;
 
 type attribute;
 
 let attr: (string, string) => attribute;
 let flag: string => attribute;
 
-let text: string => htmlElement;
-let char: char => htmlElement;
-let int: int => htmlElement;
-let float: float => htmlElement;
-let element:
-  (string, list(attribute), ~children: list(htmlElement)=?, unit) =>
-  htmlElement;
+let text: string => t;
+let char: char => t;
+let int: int => t;
+let float: float => t;
+let element: (string, list(attribute), ~children: list(t)=?, unit) => t;
 
-let renderHtmlDocument: htmlElement => string;
-let renderHtmlElement: htmlElement => string;
+let renderHtmlDocument: t => string;
+let renderHtmlElement: t => string;

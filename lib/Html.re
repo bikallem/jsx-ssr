@@ -7,10 +7,13 @@ type t =
     }
 
 and attribute =
-  | KeyValue(string, string)
+  | KeyValue{
+      key: string,
+      value: string,
+    }
   | Boolean(string);
 
-let attr = (key, value) => KeyValue(key, value);
+let attr = (key, value) => KeyValue({key, value});
 let flag = key => Boolean(key);
 
 let text = txt => Text(txt);
@@ -36,7 +39,7 @@ let rec buildElementTag = (buf, tag, attributes) => {
     buf += "<" +! tag;
     List.iter(
       fun
-      | KeyValue(k, v) => buf += " " += k += "=\"" += v +! "\""
+      | KeyValue({key, value}) => buf += " " += key += "=\"" += value +! "\""
       | Boolean(k) => buf += " " +! k,
       attributes,
     );

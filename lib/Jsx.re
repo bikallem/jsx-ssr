@@ -150,7 +150,7 @@ let mapper = (_, _) => {
         pexp_loc,
       } =>
       let (attributes, children) = map_args(args);
-      let children = [%expr [%e default_mapper.expr(mapper, children)]];
+      let children = default_mapper.expr(mapper, children);
       let args = [(Nolabel, attributes), (Labelled("children"), children)];
       Pexp_apply(expr, args) |> Exp.mk(~loc=pexp_loc);
     | e => default_mapper.expr(mapper, e)

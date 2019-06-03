@@ -8,8 +8,6 @@ open Parsetree;
 open Ast_helper;
 open Asttypes;
 
-let ocaml_version = Versions.ocaml_407;
-
 let str_expr = s => [%expr [%e Exp.constant(Pconst_string(s, None))]];
 
 let map_attribute_constant =
@@ -178,4 +176,4 @@ let mapper = (_, _) => {
   {...default_mapper, expr};
 };
 
-let () = Driver.register(~name="JSX", ocaml_version, mapper);
+let () = Driver.register(~name="JSX", Versions.ocaml_407, mapper);

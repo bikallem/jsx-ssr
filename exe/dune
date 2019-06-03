@@ -1,6 +1,6 @@
 (executable
  (name JsxTester)
- (modules JsxTester)
+ ; (modules JsxTester Custom)
  (libraries ppx-lab)
  (preprocess
   (pps ppx-lab)))

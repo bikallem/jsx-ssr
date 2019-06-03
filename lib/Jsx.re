@@ -119,22 +119,6 @@ let map_args = args => {
   (attributes, children);
 };
 
-let filter_map = (f, l) => {
-  let rec recurse = (acc, l) =>
-    switch (l) {
-    | [] => List.rev(acc)
-    | [x, ...l'] =>
-      let acc' =
-        switch (f(x)) {
-        | None => acc
-        | Some(y) => [y, ...acc]
-        };
-      recurse(acc', l');
-    };
-
-  recurse([], l);
-};
-
 let mapper = (_, _) => {
   let expr = (mapper, e) => {
     switch (e) {

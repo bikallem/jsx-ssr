@@ -42,6 +42,12 @@ let block1 = {
 
 print_endline(Html.renderHtmlDocument(block1));
 
+module Custom = {
+  let createElement = (_attributes, ~children) => {
+    <div id="hello"> ...children </div>;
+  };
+};
+
 let testAttr = "test";
 
 let strAttr = "hello3";
@@ -66,3 +72,6 @@ print_endline(Html.renderHtmlDocument(d));
 let e = <span className="test2" />;
 
 print_endline(Html.renderHtmlDocument(e));
+
+let m = <Custom> <p> "Hello world" </p> </Custom>;
+print_endline(Html.renderHtmlDocument(m));

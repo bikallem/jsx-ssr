@@ -12,28 +12,28 @@ let ocaml_version = Versions.ocaml_407;
 
 let str_expr = s => [%expr [%e Exp.constant(Pconst_string(s, None))]];
 
-let map_attributes = attributes => {
-  let map_attribute_constant =
-    fun
-    | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} as e => {
-        let isRawLiteral = (
-          fun
-          | ({txt: "reason.raw_literal", _}, _) => true
-          | _ => false
-        );
-        List.exists(isRawLiteral, pexp_attributes) ? str_expr(ident) : e;
-      }
-    | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c => [%expr
-        string_of_int([%e c])
-      ]
-    | {pexp_desc: Pexp_constant(Pconst_char(_)), _} as c => [%expr
-        String.make(1, [%e c])
-      ]
-    | {pexp_desc: Pexp_constant(Pconst_float(_)), _} as c => [%expr
-        string_of_float([%e c])
-      ]
-    | e => e;
+let map_attribute_constant =
+  fun
+  | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} as e => {
+      let isRawLiteral = (
+        fun
+        | ({txt: "reason.raw_literal", _}, _) => true
+        | _ => false
+      );
+      List.exists(isRawLiteral, pexp_attributes) ? str_expr(ident) : e;
+    }
+  | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c => [%expr
+      string_of_int([%e c])
+    ]
+  | {pexp_desc: Pexp_constant(Pconst_char(_)), _} as c => [%expr
+      String.make(1, [%e c])
+    ]
+  | {pexp_desc: Pexp_constant(Pconst_float(_)), _} as c => [%expr
+      string_of_float([%e c])
+    ]
+  | e => e;
 
+let map_attributes = attributes => {
   List.fold_right(
     (attr, acc) =>
       switch (attr) {
@@ -44,7 +44,8 @@ let map_attributes = attributes => {
         let value = map_attribute_constant(value);
         %expr
         [Html.attr([%e key], [%e value]), ...[%e acc]];
-      | _ => failwith("Invalid attribute")
+      | (Nolabel, _)
+      | (Optional(_), _) => failwith("Invalid attribute")
       },
     attributes,
     [%expr []],
@@ -105,6 +106,37 @@ let rec map_children = e => {
   };
 };
 
+/* Given a list of args, it returns a tuple of attributes and children. */
+let map_args = args => {
+  let attributes = map_attributes(args);
+  let children =
+    List.find(
+      fun
+      | (Labelled("children"), _) => true
+      | _ => false,
+      args,
+    )
+    |> snd
+    |> map_children;
+  (attributes, children);
+};
+
+let filter_map = (f, l) => {
+  let rec recurse = (acc, l) =>
+    switch (l) {
+    | [] => List.rev(acc)
+    | [x, ...l'] =>
+      let acc' =
+        switch (f(x)) {
+        | None => acc
+        | Some(y) => [y, ...acc]
+        };
+      recurse(acc', l');
+    };
+
+  recurse([], l);
+};
+
 let mapper = (_, _) => {
   let expr = (mapper, e) => {
     switch (e) {
@@ -117,16 +149,7 @@ let mapper = (_, _) => {
           ),
         pexp_loc: _,
       } =>
-      let attributes = map_attributes(args);
-      let children =
-        List.find(
-          fun
-          | (Labelled("children"), _) => true
-          | _ => false,
-          args,
-        )
-        |> snd
-        |> map_children;
+      let (attributes, children) = map_args(args);
 
       %expr
       Html.element(
@@ -135,7 +158,20 @@ let mapper = (_, _) => {
         ~children=[%e default_mapper.expr(mapper, children)],
         (),
       );
-    | _ => default_mapper.expr(mapper, e)
+    | {
+        pexp_attributes: [({txt: "JSX", _}, PStr([]))],
+        pexp_desc:
+          Pexp_apply(
+            {pexp_desc: Pexp_ident({txt: Ldot(_, "createElement"), _}), _} as expr,
+            args,
+          ),
+        pexp_loc,
+      } =>
+      let (attributes, children) = map_args(args);
+      let children = [%expr [%e default_mapper.expr(mapper, children)]];
+      let args = [(Nolabel, attributes), (Labelled("children"), children)];
+      Pexp_apply(expr, args) |> Exp.mk(~loc=pexp_loc);
+    | e => default_mapper.expr(mapper, e)
     };
   };
 

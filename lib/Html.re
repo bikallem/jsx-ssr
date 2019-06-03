@@ -1,6 +1,10 @@
 type t =
   | Text(string)
-  | Element(string, list(attribute), list(t))
+  | Element{
+      tag: string,
+      attributes: list(attribute),
+      children: list(t),
+    }
 
 and attribute =
   | KeyValue(string, string)
@@ -14,7 +18,7 @@ let char = char => text @@ String.make(1, char);
 let int = int => text @@ string_of_int(int);
 let float = float => text @@ string_of_float(float);
 let element = (tag, attributes, ~children=[], ()) =>
-  Element(tag, attributes, children);
+  Element({tag, attributes, children});
 
 /* View Rendering Functions */
 let (+=) = (buf, text) => {
@@ -47,7 +51,7 @@ and buildElement = (indentLevel, buf, element) => {
 
   switch (element) {
   | Text(s) => buf += sp += s +! "\n"
-  | Element(tag, attributes, children) =>
+  | Element({tag, attributes, children}) =>
     buildElementTag(buf += sp, tag, attributes);
     switch (children) {
     | [] => closeTag(buf, tag)

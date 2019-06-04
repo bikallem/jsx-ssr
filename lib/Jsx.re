@@ -8,74 +8,30 @@ open Parsetree;
 open Ast_helper;
 open Asttypes;
 
-let str_expr = s => [%expr [%e Exp.constant(Pconst_string(s, None))]];
+let strExpr = s => [%expr [%e Exp.constant(Pconst_string(s, None))]];
 
-let map_attribute_constant =
-  fun
-  | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} as e => {
-      let isRawLiteral = (
-        fun
-        | ({txt: "reason.raw_literal", _}, _) => true
-        | _ => false
-      );
-      List.exists(isRawLiteral, pexp_attributes) ? str_expr(ident) : e;
-    }
-  | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c => [%expr
-      string_of_int([%e c])
-    ]
-  | {pexp_desc: Pexp_constant(Pconst_char(_)), _} as c => [%expr
-      String.make(1, [%e c])
-    ]
-  | {pexp_desc: Pexp_constant(Pconst_float(_)), _} as c => [%expr
-      string_of_float([%e c])
-    ]
-  | e => e;
+let mapConstToStrExpr = (mapper, expr) =>
+  switch (expr) {
+  | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} as e =>
+    let isRawLiteral = (
+      fun
+      | ({txt: "reason.raw_literal", _}, _) => true
+      | _ => false
+    );
+    List.exists(isRawLiteral, pexp_attributes)
+      ? mapper @@ strExpr(ident) : e;
+  | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c =>
+    mapper @@ [%expr string_of_int([%e c])]
+  | {pexp_desc: Pexp_constant(Pconst_char(_)), _} as c =>
+    mapper @@ [%expr String.make(1, [%e c])]
+  | {pexp_desc: Pexp_constant(Pconst_float(_)), _} as c =>
+    mapper @@ [%expr string_of_float([%e c])]
+  | {pexp_desc: Pexp_constant(Pconst_string(_)), _} as c =>
+    mapper @@ [%expr [%e c]]
+  | _ => expr
+  };
 
-let map_attributes = attributes => {
-  List.fold_right(
-    (attr, acc) =>
-      switch (attr) {
-      | (Nolabel, [%expr ()]) => acc
-      | (Labelled("children"), _) => acc
-      | (Labelled(propName), value) =>
-        let key = str_expr(propName);
-        let value = map_attribute_constant(value);
-        %expr
-        [Html.attr([%e key], [%e value]), ...[%e acc]];
-      | (Nolabel, _)
-      | (Optional(_), _) => failwith("Invalid attribute")
-      },
-    attributes,
-    [%expr []],
-  );
-};
-
-let rec map_children = e => {
-  let map_constant =
-    fun
-    | {pexp_desc: Pexp_ident({txt: Lident(ident), _}), pexp_attributes, _} as e => {
-        let isRawLiteral = (
-          fun
-          | ({txt: "reason.raw_literal", _}, _) => true
-          | _ => false
-        );
-        List.exists(isRawLiteral, pexp_attributes)
-          ? [%expr Html.text([%e str_expr(ident)])] : e;
-      }
-    | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c => [%expr
-        Html.text(string_of_int([%e c]))
-      ]
-    | {pexp_desc: Pexp_constant(Pconst_char(_)), _} as c => [%expr
-        Html.text(String.make(1, [%e c]))
-      ]
-    | {pexp_desc: Pexp_constant(Pconst_float(_)), _} as c => [%expr
-        Html.text(string_of_float([%e c]))
-      ]
-    | {pexp_desc: Pexp_constant(Pconst_string(_)), _} as c => [%expr
-        Html.text([%e c])
-      ]
-    | e => e;
-
+let rec mapChildren = e =>
   switch (e) {
   | {
       pexp_desc:
@@ -87,11 +43,10 @@ let rec map_children = e => {
     } as e =>
     let tuple =
       switch (tuple) {
-      | [{pexp_desc: Pexp_constant(_), _} as car, cdr] => [
-          map_constant(car),
-          map_children(cdr),
-        ]
-      | [car, cdr] => [car, map_children(cdr)]
+      | [{pexp_desc: Pexp_constant(_), _} as car, cdr] =>
+        let mapper = expr => [%expr Html.text([%e expr])];
+        [mapConstToStrExpr(mapper, car), mapChildren(cdr)];
+      | [car, cdr] => [car, mapChildren(cdr)]
       | x => x
       };
 
@@ -102,11 +57,27 @@ let rec map_children = e => {
     };
   | x => x
   };
-};
 
 /* Given a list of args, it returns a tuple of attributes and children. */
-let map_args = args => {
-  let attributes = map_attributes(args);
+let mapArgs = args => {
+  let attributes =
+    List.fold_right(
+      (attr, acc) =>
+        switch (attr) {
+        | (Nolabel, [%expr ()]) => acc
+        | (Labelled("children"), _) => acc
+        | (Labelled(propName), value) =>
+          let key = strExpr(propName);
+          let value = mapConstToStrExpr(e => e, value);
+          %expr
+          [Html.attr([%e key], [%e value]), ...[%e acc]];
+        | (Nolabel, _)
+        | (Optional(_), _) => failwith("Invalid attribute")
+        },
+      args,
+      [%expr []],
+    );
+
   let children =
     List.find(
       fun
@@ -115,7 +86,7 @@ let map_args = args => {
       args,
     )
     |> snd
-    |> map_children;
+    |> mapChildren;
   (attributes, children);
 };
 
@@ -131,11 +102,11 @@ let mapper = (_, _) => {
           ),
         pexp_loc: _,
       } =>
-      let (attributes, children) = map_args(args);
+      let (attributes, children) = mapArgs(args);
 
       %expr
       Html.element(
-        [%e str_expr(html_tag)],
+        [%e strExpr(html_tag)],
         [%e attributes],
         ~children=[%e default_mapper.expr(mapper, children)],
         (),

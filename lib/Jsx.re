@@ -59,38 +59,6 @@ let rec mapChildren = e =>
   | x => x
   };
 
-/* Given a list of args, it returns a tuple of attributes and children. */
-let mapArgs = args => {
-  let attributes =
-    List.fold_right(
-      (attr, acc) =>
-        switch (attr) {
-        | (Nolabel, [%expr ()]) => acc
-        | (Labelled("children"), _) => acc
-        | (Labelled(propName), value) =>
-          let key = strExpr(propName);
-          let value = mapConstToStrExpr(e => e, value);
-          %expr
-          [Html.attr([%e key], [%e value]), ...[%e acc]];
-        | (Nolabel, _)
-        | (Optional(_), _) => failwith("Invalid attribute")
-        },
-      args,
-      [%expr []],
-    );
-
-  let children =
-    List.find(
-      fun
-      | (Labelled("children"), _) => true
-      | _ => false,
-      args,
-    )
-    |> snd
-    |> mapChildren;
-  (attributes, children);
-};
-
 let mapper = (_, _) => {
   let expr = (mapper, e) => {
     switch (e) {
@@ -103,7 +71,33 @@ let mapper = (_, _) => {
           ),
         pexp_loc: _,
       } =>
-      let (attributes, children) = mapArgs(args);
+      let attributes =
+        List.fold_right(
+          (attr, acc) =>
+            switch (attr) {
+            | (Nolabel, [%expr ()]) => acc
+            | (Labelled("children"), _) => acc
+            | (Labelled(propName), value) =>
+              let key = strExpr(propName);
+              let value = mapConstToStrExpr(e => e, value);
+              %expr
+              [Html.attr([%e key], [%e value]), ...[%e acc]];
+            | (Nolabel, _)
+            | (Optional(_), _) => failwith("Invalid attribute")
+            },
+          args,
+          [%expr []],
+        );
+
+      let children =
+        List.find(
+          fun
+          | (Labelled("children"), _) => true
+          | _ => false,
+          args,
+        )
+        |> snd
+        |> mapChildren;
 
       %expr
       Html.element(

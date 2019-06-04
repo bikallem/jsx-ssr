@@ -6,9 +6,10 @@
     "build": "refmterr dune build -p #{self.name} -j4"
   },
   "scripts": {
-    "fmt": "esy dune build @fmt --auto-promote",
+    "fmt"  : "esy dune build @fmt --auto-promote",
     "test" : "esy dune runtest",
-    "clean": "esy dune clean"
+    "clean": "esy dune clean",
+    "all"  : "esy dune build @all"
   },
   "dependencies": {
     "@esy-ocaml/reason": "*",

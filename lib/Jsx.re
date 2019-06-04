@@ -149,9 +149,20 @@ let mapper = (_, _) => {
           ),
         pexp_loc,
       } =>
-      let (attributes, children) = map_args(args);
-      let children = default_mapper.expr(mapper, children);
-      let args = [(Nolabel, attributes), (Labelled("children"), children)];
+      let args =
+        List.fold_right(
+          (arg, args') =>
+            switch (arg) {
+            | (Labelled("children") as lbl, children) => [
+                (lbl, default_mapper.expr(mapper, children)),
+                ...args',
+              ]
+            | (Nolabel, [%expr ()]) => args'
+            | x => [x, ...args']
+            },
+          args,
+          [],
+        );
       Pexp_apply(expr, args) |> Exp.mk(~loc=pexp_loc);
     | e => default_mapper.expr(mapper, e)
     };

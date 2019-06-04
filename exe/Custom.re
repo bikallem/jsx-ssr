@@ -1,5 +1,5 @@
 open Ppx_lab;
 
-let createElement = (_attributes, ~children) => {
-  <div id="hello"> ...children </div>;
+let createElement = (~className, ~id, ~children) => {
+  <div className id> ...children </div>;
 };

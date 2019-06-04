@@ -18,6 +18,7 @@ let mapConstToStrExpr = (mapper, expr) =>
       | ({txt: "reason.raw_literal", _}, _) => true
       | _ => false
     );
+
     List.exists(isRawLiteral, pexp_attributes)
       ? mapper @@ strExpr(ident) : e;
   | {pexp_desc: Pexp_constant(Pconst_integer(_)), _} as c =>

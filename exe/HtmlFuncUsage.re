@@ -1,4 +1,4 @@
-open Ppx_lab;
+open Jsx_ssr;
 
 /* Sample DOM element creation of the following html element.
       <div id="container">

@@ -1,5 +1,5 @@
 /* ReasonML converts <div className="test"/> to (div ~className:test ~children:[] ())[@JSX]. */
-open Ppx_lab;
+open Jsx_ssr;
 
 let testAttr = "test";
 

@@ -1,5 +1,5 @@
 {
-  "name": "ppx-lab",
+  "name": "jsx-ssr",
   "version": "0.0.0",
   "description": "PPX experiments in ocaml/reasonml.",
   "esy": {

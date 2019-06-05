@@ -59,7 +59,7 @@ let rec mapChildren = e =>
   | x => x
   };
 
-let mapAttrName =
+let mapAttributeName =
   fun
   | "className" => "class"
   | "htmlFor" => "for"
@@ -71,7 +71,7 @@ let mapAttrName =
   | "in_" => "in"
   | attr => attr;
 
-let expr = (mapper, e) => {
+let mapExpression = (mapper, e) => {
   switch (e) {
   | {
       pexp_attributes: [({txt: "JSX", loc: _}, PStr([]))],
@@ -89,7 +89,7 @@ let expr = (mapper, e) => {
           | (Nolabel, [%expr ()]) => acc
           | (Labelled("children"), _) => acc
           | (Labelled(attr), value) =>
-            let key = strExpr(attr |> mapAttrName);
+            let key = attr |> mapAttributeName |> strExpr;
             let value = mapConstExpr(e => e, value);
             %expr
             [Html.attr([%e key], [%e value]), ...[%e acc]];
@@ -145,6 +145,6 @@ let expr = (mapper, e) => {
   };
 };
 
-let mapper = (_, _) => {...default_mapper, expr};
+let mapper = (_, _) => {...default_mapper, expr: mapExpression};
 
 let () = Driver.register(~name="JSX", Versions.ocaml_407, mapper);

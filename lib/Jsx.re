@@ -71,7 +71,7 @@ let mapAttributeName =
   | "in_" => "in"
   | attr => attr;
 
-let mapExpression = (mapper, e) => {
+let mapExpression = (mapper, e) =>
   switch (e) {
   | {
       pexp_attributes: [({txt: "JSX", loc: _}, PStr([]))],
@@ -143,7 +143,6 @@ let mapExpression = (mapper, e) => {
     Pexp_apply(expr, args) |> Exp.mk(~loc=pexp_loc);
   | e => default_mapper.expr(mapper, e)
   };
-};
 
 let mapper = (_, _) => {...default_mapper, expr: mapExpression};
 

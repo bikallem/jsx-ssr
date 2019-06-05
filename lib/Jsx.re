@@ -1,4 +1,4 @@
-/* This ppx converts the given jsx into a htmlElement instance. */
+/* Converts ReasonML JSX into Html.t instance. */
 
 open Migrate_parsetree;
 open Ast_407;

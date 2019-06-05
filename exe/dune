@@ -1,6 +1,6 @@
 (executable
  (name JsxTester)
- (modules JsxTester Custom)
+ (modules JsxTester Custom HelloWorld)
  (libraries jsx-ssr)
  (preprocess
   (pps jsx-ssr)))

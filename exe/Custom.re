@@ -1,5 +1,7 @@
 open Jsx_ssr;
 
-let createElement = (~className, ~id, ~children) => {
-  <div className id> ...children </div>;
+let createElement = (~name, ~className, ~id, ~children) => {  
+  <div className id>     
+    ...[<HelloWorld name/>, ...children]
+  </div>;  
 };

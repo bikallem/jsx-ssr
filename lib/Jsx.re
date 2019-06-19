@@ -111,7 +111,7 @@ let mapExpression = (mapper, e) =>
       |> mapChildren;
 
     %expr
-    Html.createElement(
+    Html.element(
       [%e strExpr(html_tag)],
       [%e attributes],
       ~children=[%e default_mapper.expr(mapper, children)],

@@ -1,9 +1,9 @@
-type t =
+type element =
   | Text(string)
   | Element{
       tag: string,
       attributes: list(attribute),
-      children: list(t),
+      children: list(element),
     }
 
 and attribute =

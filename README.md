@@ -1,4 +1,10 @@
-# JSX SSR
-This is library that implements JSX SSR(Server Side Rendering) on the native ReasonML, i.e. without javascript or nodejs. The library allows to implement SSR html views using ReasonML JSX syntax. 
+# What is JSX SSR?
+JSX SSR(Server Side Rendering) is a HTML view engine implemented in ReasonML. As it is inspired by ReasonReact you can use ReasonML JSX syntax to define your html views. However, here the views are executed in the server as opposed to in the client browser. All html generation/rendering is done in native ReasonML and as such there is no requirement of javascript or nodejs. 
 
-It is implemented in ReasonML and allows ReactJS developers to peruse their React skills on the back-end.
+# v1.0.0 Roadmap
+- [ ] Publish to opam and npm
+- [ ] Add usage documentation
+- [ ] Add examples
+- [ ] Add unit tests using Rely
+- [x] Implement JSX ppx for @JSX
+- [x] Implement HTML rendering engine 

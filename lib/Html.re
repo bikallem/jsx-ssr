@@ -1,9 +1,9 @@
-type t =
+type element =
   | Text(string)
   | Element{
       tag: string,
       attributes: list(attribute),
-      children: list(t),
+      children: list(element),
     }
 
 and attribute =
@@ -20,7 +20,7 @@ let text = txt => Text(txt);
 let char = char => text @@ String.make(1, char);
 let int = int => text @@ string_of_int(int);
 let float = float => text @@ string_of_float(float);
-let element = (tag, attributes, ~children=[], ()) =>
+let createElement = (tag, attributes, ~children=[], ()) =>
   Element({tag, attributes, children});
 
 /* View Rendering Functions */

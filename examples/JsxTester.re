@@ -1,4 +1,3 @@
-/* ReasonML converts <div className="test"/> to (div ~className:test ~children:[] ())[@JSX]. */
 open Jsx_ssr;
 
 let testAttr = "test";
@@ -20,13 +19,13 @@ let d =
     <span class_=""> <p> "hello" </p> </span>
   </div>;
 
-print_endline(Html.renderHtmlDocument(d));
+print_endline(Html.renderDocument(d));
 
 let e = <span className="test2" />;
-print_endline(Html.renderHtmlDocument(e));
+print_endline(Html.renderDocument(e));
 
 let m =
   <Custom name="James Bond" className="hello" id="customId1">
     <p> "Hello world" </p>
   </Custom>;
-print_endline(Html.renderHtmlDocument(m));
+print_endline(Html.renderDocument(m));

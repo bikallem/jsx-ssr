@@ -1,6 +1,6 @@
 open Jsx_ssr;
 
-/* Sample DOM element creation of the following html element.
+/* Sample DOM createElement creation of the following html createElement.
       <div id="container">
         <input value="foo" type="text"/>
         <a href="/bar">bar</a>
@@ -12,26 +12,39 @@ let block1 = {
   open Html;
 
   let input1 =
-    element("input", [attr("value", "foo"), attr("type", "text")], ());
+    createElement(
+      "input",
+      [attr("value", "foo"), attr("type", "text")],
+      (),
+    );
   let input2 =
-    element("input", [attr("type", "checkbox"), flag("checked")], ());
+    createElement(
+      "input",
+      [attr("type", "checkbox"), flag("checked")],
+      (),
+    );
   let a =
-    element("a", [attr("href", "/bar")], ~children=[text("bar")], ());
+    createElement(
+      "a",
+      [attr("href", "/bar")],
+      ~children=[text("bar")],
+      (),
+    );
   let span =
-    element(
+    createElement(
       "span",
       [attr("onclick", "myFunction('james')")],
       ~children=[text("Click Me!")],
       (),
     );
   let button =
-    element(
+    createElement(
       "button",
       [attr("onclick", "alert('Hello World')")],
       ~children=[text("Click Me!")],
       (),
     );
-  element(
+  createElement(
     "div",
     [attr("id", "container1")],
     ~children=[input1, input2, a, span, button],
@@ -39,4 +52,4 @@ let block1 = {
   );
 };
 
-print_endline(Html.renderHtmlDocument(block1));
+print_endline(Html.renderDocument(block1));

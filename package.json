@@ -6,20 +6,21 @@
     "build": "refmterr dune build -p #{self.name} -j4"
   },
   "scripts": {
-    "fmt"  : "esy dune build @fmt --auto-promote",
-    "test" : "esy dune runtest",
+    "fmt": "esy dune build @fmt --auto-promote",
+    "test": "esy dune runtest",
     "clean": "esy dune clean",
-    "all"  : "esy dune build @all"
+    "all": "esy dune build @all"
   },
   "dependencies": {
     "@esy-ocaml/reason": "*",
     "@opam/ocaml-migrate-parsetree": "*",
     "@opam/ppx_tools_versioned": "5.2.2",
-    "ocaml": "^4.7.0"
+    "@opam/camomile": "*",
+    "ocaml": "4.7.0"
   },
-  "devDependencies": { 
+  "devDependencies": {
     "@opam/merlin": "*",
-    "@opam/rtop": "3.4.0",
+    "@opam/rtop": "*",
     "@opam/utop": "*",
     "refmterr": "*",
     "@opam/dune": "*"

@@ -2,9 +2,7 @@
   "name": "jsx-ssr",
   "version": "0.0.0",
   "description": "PPX experiments in ocaml/reasonml.",
-  "esy": {
-    "build": "refmterr dune build -p #{self.name} -j4"
-  },
+  "esy": { "build": "refmterr dune build -p #{self.name} -j4" },
   "scripts": {
     "fmt": "esy dune build @fmt --auto-promote",
     "test": "esy dune runtest",
@@ -13,10 +11,12 @@
   },
   "dependencies": {
     "@esy-ocaml/reason": "*",
+    "@opam/camomile": "*",
     "@opam/ocaml-migrate-parsetree": "*",
     "@opam/ppx_tools_versioned": "5.2.2",
-    "@opam/camomile": "*",
-    "ocaml": "4.7.0"
+    "@opam/uutf": "1.0.2",
+    "@reason-native/rely": "^3.0.0",
+    "ocaml": "4.7.1"
   },
   "devDependencies": {
     "@opam/merlin": "*",

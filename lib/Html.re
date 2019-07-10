@@ -13,11 +13,85 @@ and attribute =
     }
   | Boolean(string);
 
-let attr = (key, value) =>
-  KeyValue({key, value: HtmlEncoder.encodeHtml(value)});
+/* Returns Some(i) if the given text contains a character that needs to be
+   html encoded. 'i' is the 0-based index where the first such character is
+   found. */
+let firstIndexOfEncodingChar = text => {
+  let rec loop = (text, i, l) =>
+    if (i < l) {
+      switch (text.[i]) {
+      | '"'
+      | '&'
+      | '\''
+      | '/'
+      | '<'
+      | '>' => Some(i)
+      | '\t'
+      | '\n'
+      | '\r'
+      | ' '..'~' => loop(text, i + 1, l)
+      | _ => Some(i)
+      };
+    } else {
+      None;
+    };
+
+  loop(text, 0, String.length(text));
+};
+
+let encodeHtml = text => {
+  let len = String.length(text);
+  switch (firstIndexOfEncodingChar(text)) {
+  | Some(i) =>
+    let buffer = Buffer.create(len);
+    Uutf.String.fold_utf_8(
+      ~pos=i,
+      ~len,
+      (_, _, d) =>
+        switch (d) {
+        | `Uchar(u) =>
+          switch (Uchar.to_int(u)) {
+          | 38 => Buffer.add_string(buffer, "&amp;")
+          | 60 => Buffer.add_string(buffer, "&lt;")
+          | 62 => Buffer.add_string(buffer, "&gt;")
+          | 34 => Buffer.add_string(buffer, "&quot;")
+          | 39 => Buffer.add_string(buffer, "&#x27;")
+          | 47 => Buffer.add_string(buffer, "&#x2F;")
+          | code =>
+            let u =
+              /* Illegal characters in html
+                 http://en.wikipedia.org/wiki/Character_encodings_in_HTML
+                 http://www.w3.org/TR/html5/syntax.html */
+              if (code <= 31
+                  && code != 9
+                  && code != 10
+                  && code != 13
+                  || code >= 127
+                  && code <= 159
+                  || code
+                  land 0xFFFF == 0xFFFE
+                  || code
+                  land 0xFFFF == 0xFFFF) {
+                Uutf.u_rep;
+              } else {
+                u;
+              };
+            Buffer.add_utf_8_uchar(buffer, u);
+          }
+        | `Malformed(_) => Buffer.add_utf_8_uchar(buffer, Uutf.u_rep)
+        },
+      (),
+      text,
+    );
+    Buffer.contents(buffer);
+  | None => text
+  };
+};
+let attr = (key, value) => KeyValue({key, value: encodeHtml(value)});
+
 let flag = key => Boolean(key);
 
-let text = txt => Text(HtmlEncoder.encodeHtml(txt));
+let text = txt => Text(encodeHtml(txt));
 let rawText = txt => Text(txt);
 let char = char => text @@ String.make(1, char);
 let int = int => text @@ string_of_int(int);

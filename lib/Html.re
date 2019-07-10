@@ -143,14 +143,14 @@ and buildElement = (indentLevel, buf, element) => {
   };
 };
 
-let renderDocument = element => {
+let renderAsDoc = element => {
   let buf = Buffer.create(bufSize);
   buf +! "<!DOCTYPE html>\n";
   buildElement(0, buf, element);
   Buffer.contents(buf);
 };
 
-let renderElement = element => {
+let render = element => {
   let buf = Buffer.create(bufSize);
   buildElement(0, buf, element);
   Buffer.contents(buf);

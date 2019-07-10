@@ -19,13 +19,13 @@ let d =
     <span class_=""> <p> "hello" </p> </span>
   </div>;
 
-print_endline(Html.renderDocument(d));
+print_endline(Html.renderAsDoc(d));
 
 let e = <span className="test2" />;
-print_endline(Html.renderDocument(e));
+print_endline(Html.renderAsDoc(e));
 
 let m =
   <Custom name="James Bond" className="hello" id="customId1">
     <p> "Hello world" </p>
   </Custom>;
-print_endline(Html.renderDocument(m));
+print_endline(Html.render(m));

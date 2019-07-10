@@ -7,8 +7,8 @@ JSX SSR(Server Side Rendering) is a HTML view engine implemented in ReasonML. As
 - [ ] Publish to opam and npm
 - [ ] Add usage documentation
 - [x] Add examples
-- [ ] Html encode text node
-- [ ] Add raw text 
+- [x] Html encode text node
+- [x] Add raw text
 - [ ] Add unit tests using Rely
 - [x] Implement JSX ppx for @JSX
 - [x] Implement HTML rendering engine

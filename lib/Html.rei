@@ -37,7 +37,13 @@ let float: float => element;
 let createElement:
   (string, list(attribute), ~children: list(element)=?, unit) => element;
 
-/* Html encodes the given text. */
+/* Html encodes the given text.
+
+    Additionally, illegal characters as defined in
+    http://en.wikipedia.org/wiki/Character_encodings_in_HTML and
+    http://www.w3.org/TR/html5/syntax.html
+    are normalised.
+   */
 let encodeHtml: string => string;
 
 /* Renders a given element as a Html document string, i.e. html doc

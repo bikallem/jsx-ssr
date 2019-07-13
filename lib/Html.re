@@ -39,9 +39,6 @@ let indextOfFirstEncodingChar = text => {
   loop(text, 0, String.length(text));
 };
 
-/* Illegal characters in html
-   http://en.wikipedia.org/wiki/Character_encodings_in_HTML
-   http://www.w3.org/TR/html5/syntax.html */
 let encodeHtml = text => {
   let len = String.length(text);
   switch (indextOfFirstEncodingChar(text)) {

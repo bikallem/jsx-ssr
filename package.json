@@ -5,7 +5,7 @@
   "esy": { "build": "refmterr dune build -p #{self.name} -j4" },
   "scripts": {
     "fmt": "esy dune build @fmt --auto-promote",
-    "test": "esy dune runtest",
+    "test": "esy dune runtest --auto-promote",
     "clean": "esy dune clean",
     "all": "esy dune build @all"
   },

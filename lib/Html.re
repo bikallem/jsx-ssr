@@ -53,7 +53,7 @@ let%expect_test "indexOfFirstEncodingChar(\"Hello world\")" = {
 let%expect_test "indexOfFirstEncodingChar(\"Hello, <div>world</div>\")" = {
   printIndex("Hello, <div>world</div>");
   %expect
-  {| 7 |};
+  {| 6 |};
 };
 
 let encodeHtml = text => {
@@ -122,7 +122,7 @@ let (+!) = (buf, text) => Buffer.add_string(buf, text);
 
 let bufSize = 1024;
 
-let rec buildElementTag = (buf, tag, attributes) => {
+let rec renderElementTag = (buf, tag, attributes) => {
   switch (attributes) {
   | [] => buf += "<" += tag +! ">"
   | _ =>
@@ -137,7 +137,7 @@ let rec buildElementTag = (buf, tag, attributes) => {
   };
 }
 
-and buildElement = (indentLevel, buf, element) => {
+and renderElement = (indentLevel, buf, element) => {
   let indentSize = 4;
   let sp = String.make(indentSize * indentLevel, ' ');
   let closeTag = (buf, tag) => buf += "</" += tag +! ">\n";
@@ -145,12 +145,12 @@ and buildElement = (indentLevel, buf, element) => {
   switch (element) {
   | Text(s) => buf += sp += s +! "\n"
   | Element({tag, attributes, children}) =>
-    buildElementTag(buf += sp, tag, attributes);
+    renderElementTag(buf += sp, tag, attributes);
     switch (children) {
     | [] => closeTag(buf, tag)
     | _ =>
       buf +! "\n";
-      List.iter(elem => buildElement(indentLevel + 1, buf, elem), children);
+      List.iter(elem => renderElement(indentLevel + 1, buf, elem), children);
       buf +! sp;
       closeTag(buf, tag);
     };
@@ -160,12 +160,12 @@ and buildElement = (indentLevel, buf, element) => {
 let renderAsDoc = element => {
   let buf = Buffer.create(bufSize);
   buf +! "<!DOCTYPE html>\n";
-  buildElement(0, buf, element);
+  renderElement(0, buf, element);
   Buffer.contents(buf);
 };
 
 let render = element => {
   let buf = Buffer.create(bufSize);
-  buildElement(0, buf, element);
+  renderElement(0, buf, element);
   Buffer.contents(buf);
 };

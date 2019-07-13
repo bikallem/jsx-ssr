@@ -16,7 +16,7 @@ and attribute =
 /* Returns Some(i) if the given text contains a character that needs to be
    html encoded. 'i' is the 0-based index where the first such character is
    found. */
-let firstIndexOfEncodingChar = text => {
+let indextOfFirstEncodingChar = text => {
   let rec loop = (text, i, l) =>
     if (i < l) {
       switch (text.[i]) {
@@ -41,7 +41,7 @@ let firstIndexOfEncodingChar = text => {
 
 let encodeHtml = text => {
   let len = String.length(text);
-  switch (firstIndexOfEncodingChar(text)) {
+  switch (indextOfFirstEncodingChar(text)) {
   | Some(i) =>
     let buffer = Buffer.create(len);
     Uutf.String.fold_utf_8(

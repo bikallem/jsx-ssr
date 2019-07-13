@@ -37,6 +37,9 @@ let float: float => element;
 let createElement:
   (string, list(attribute), ~children: list(element)=?, unit) => element;
 
+/* Html encodes the given text. */
+let encodeHtml: string => string;
+
 /* Renders a given element as a Html document string, i.e. html doc
    declaration are printed, eg. "<!DOCTYPE html>" */
 let renderAsDoc: element => string;

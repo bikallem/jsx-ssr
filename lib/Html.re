@@ -39,6 +39,9 @@ let indextOfFirstEncodingChar = text => {
   loop(text, 0, String.length(text));
 };
 
+/* Illegal characters in html
+   http://en.wikipedia.org/wiki/Character_encodings_in_HTML
+   http://www.w3.org/TR/html5/syntax.html */
 let encodeHtml = text => {
   let len = String.length(text);
   switch (indextOfFirstEncodingChar(text)) {
@@ -59,9 +62,6 @@ let encodeHtml = text => {
           | 47 => Buffer.add_string(buffer, "&#x2F;")
           | code =>
             let u =
-              /* Illegal characters in html
-                 http://en.wikipedia.org/wiki/Character_encodings_in_HTML
-                 http://www.w3.org/TR/html5/syntax.html */
               if (code <= 31
                   && code != 9
                   && code != 10

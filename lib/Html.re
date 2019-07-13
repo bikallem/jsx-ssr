@@ -39,6 +39,23 @@ let indextOfFirstEncodingChar = text => {
   loop(text, 0, String.length(text));
 };
 
+let printIndex = text => {
+  let index = indextOfFirstEncodingChar(text);
+  Fmt.(pr("%a", option(~none=nop, int), index));
+};
+
+let%expect_test "indexOfFirstEncodingChar(\"Hello world\")" = {
+  printIndex("Hello, world!");
+  %expect
+  {||};
+};
+
+let%expect_test "indexOfFirstEncodingChar(\"Hello, <div>world</div>\")" = {
+  printIndex("Hello, <div>world</div>");
+  %expect
+  {| 7 |};
+};
+
 let encodeHtml = text => {
   let len = String.length(text);
   switch (indextOfFirstEncodingChar(text)) {

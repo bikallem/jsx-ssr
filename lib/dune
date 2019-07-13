@@ -1,7 +1,8 @@
 (library
  (name jsx_ssr)
  (public_name jsx-ssr)
- (libraries ocaml-migrate-parsetree ppx_tools_versioned uutf)
+ (libraries ocaml-migrate-parsetree ppx_tools_versioned uutf fmt)
  (kind ppx_rewriter)
+ (inline_tests)
  (preprocess
-  (pps ppx_tools_versioned.metaquot_407)))
+  (pps ppx_tools_versioned.metaquot_407 ppx_expect)))

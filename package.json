@@ -12,7 +12,9 @@
   "dependencies": {
     "@esy-ocaml/reason": "*",
     "@opam/camomile": "*",
+    "@opam/fmt": "0.8.6",
     "@opam/ocaml-migrate-parsetree": "*",
+    "@opam/ppx_expect": "v0.12.0",
     "@opam/ppx_tools_versioned": "5.2.2",
     "@opam/uutf": "1.0.2",
     "@reason-native/console": "^0.1.0",

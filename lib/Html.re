@@ -53,7 +53,20 @@ let%expect_test "indexOfFirstEncodingChar(\"Hello world\")" = {
 let%expect_test "indexOfFirstEncodingChar(\"Hello, <div>world</div>\")" = {
   printIndex("Hello, <div>world</div>");
   %expect
-  {| 7 |}
+  {| 7 |};
+};
+
+let isControlChar = code => {
+  code <= 31
+  && code != 9
+  && code != 10
+  && code != 13
+  || code >= 127
+  && code <= 159
+  || code
+  land 0xFFFF == 0xFFFE
+  || code
+  land 0xFFFF == 0xFFFF;
 };
 
 let encodeHtml = text => {
@@ -74,23 +87,9 @@ let encodeHtml = text => {
           | 34 => Buffer.add_string(buffer, "&quot;")
           | 39 => Buffer.add_string(buffer, "&#x27;")
           | 47 => Buffer.add_string(buffer, "&#x2F;")
-          | code =>
-            let u =
-              if (code <= 31
-                  && code != 9
-                  && code != 10
-                  && code != 13
-                  || code >= 127
-                  && code <= 159
-                  || code
-                  land 0xFFFF == 0xFFFE
-                  || code
-                  land 0xFFFF == 0xFFFF) {
-                Uutf.u_rep;
-              } else {
-                u;
-              };
-            Buffer.add_utf_8_uchar(buffer, u);
+          | code when isControlChar(code) =>
+            Buffer.add_utf_8_uchar(buffer, Uutf.u_rep)
+          | _ => Buffer.add_utf_8_uchar(buffer, u)
           }
         | `Malformed(_) => Buffer.add_utf_8_uchar(buffer, Uutf.u_rep)
         },
@@ -101,14 +100,13 @@ let encodeHtml = text => {
   | None => text
   };
 };
+
 let attr = (key, value) => KeyValue({key, value: encodeHtml(value)});
-
 let flag = key => Boolean(key);
-
 let text = txt => Text(encodeHtml(txt));
 let rawText = txt => Text(txt);
 let emptyText = rawText("");
-let comment = txt => Text(encodeHtml(txt) |> Printf.sprintf("<!-- %s -->")); 
+let comment = txt => Text(encodeHtml(txt) |> Printf.sprintf("<!-- %s -->"));
 let char = char => text @@ String.make(1, char);
 let int = int => text @@ string_of_int(int);
 let float = float => text @@ string_of_float(float);

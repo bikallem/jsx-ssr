@@ -107,6 +107,8 @@ let flag = key => Boolean(key);
 
 let text = txt => Text(encodeHtml(txt));
 let rawText = txt => Text(txt);
+let emptyText = rawText("");
+let comment = txt => Text(encodeHtml(txt) |> Printf.sprintf("<!-- %s -->")); 
 let char = char => text @@ String.make(1, char);
 let int = int => text @@ string_of_int(int);
 let float = float => text @@ string_of_float(float);

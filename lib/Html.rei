@@ -22,6 +22,10 @@ let text: string => element;
    care since using this function may expose you to XSS attacks. */
 let rawText: string => element;
 
+let emptyText: element;
+
+let comment: string => element;
+
 /* Creates a html element from char. */
 let char: char => element;
 

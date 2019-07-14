@@ -69,6 +69,23 @@ let isControlChar = code => {
   land 0xFFFF == 0xFFFF;
 };
 
+let encodeChar = buffer => {
+  fun
+  | `Uchar(u) =>
+    switch (Uchar.to_int(u)) {
+    | 38 => Buffer.add_string(buffer, "&amp;")
+    | 60 => Buffer.add_string(buffer, "&lt;")
+    | 62 => Buffer.add_string(buffer, "&gt;")
+    | 34 => Buffer.add_string(buffer, "&quot;")
+    | 39 => Buffer.add_string(buffer, "&#x27;")
+    | 47 => Buffer.add_string(buffer, "&#x2F;")
+    | code when isControlChar(code) =>
+      Buffer.add_utf_8_uchar(buffer, Uutf.u_rep)
+    | _ => Buffer.add_utf_8_uchar(buffer, u)
+    }
+  | `Malformed(_) => Buffer.add_utf_8_uchar(buffer, Uutf.u_rep);
+};
+
 let encodeHtml = text => {
   let len = String.length(text);
   switch (indextOfFirstEncodingChar(text)) {
@@ -77,22 +94,7 @@ let encodeHtml = text => {
     Uutf.String.fold_utf_8(
       ~pos=i,
       ~len,
-      (_, _, d) =>
-        switch (d) {
-        | `Uchar(u) =>
-          switch (Uchar.to_int(u)) {
-          | 38 => Buffer.add_string(buffer, "&amp;")
-          | 60 => Buffer.add_string(buffer, "&lt;")
-          | 62 => Buffer.add_string(buffer, "&gt;")
-          | 34 => Buffer.add_string(buffer, "&quot;")
-          | 39 => Buffer.add_string(buffer, "&#x27;")
-          | 47 => Buffer.add_string(buffer, "&#x2F;")
-          | code when isControlChar(code) =>
-            Buffer.add_utf_8_uchar(buffer, Uutf.u_rep)
-          | _ => Buffer.add_utf_8_uchar(buffer, u)
-          }
-        | `Malformed(_) => Buffer.add_utf_8_uchar(buffer, Uutf.u_rep)
-        },
+      (_, _, ch) => encodeChar(buffer, ch),
       (),
       text,
     );

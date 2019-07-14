@@ -53,7 +53,7 @@ let%expect_test "indexOfFirstEncodingChar(\"Hello world\")" = {
 let%expect_test "indexOfFirstEncodingChar(\"Hello, <div>world</div>\")" = {
   printIndex("Hello, <div>world</div>");
   %expect
-  {| 6 |};
+  {| 7 |}
 };
 
 let encodeHtml = text => {

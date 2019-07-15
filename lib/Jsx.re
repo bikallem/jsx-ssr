@@ -92,7 +92,7 @@ let mapExpression = (mapper, e) =>
             let key = attr |> mapAttributeName |> strExpr;
             let value = mapConstExpr(e => e, value);
             %expr
-            [Html.E.attr([%e key], [%e value]), ...[%e acc]];
+            [Html.A.attr([%e key], [%e value]), ...[%e acc]];
           | (Nolabel, _)
           | (Optional(_), _) => failwith("Invalid attribute")
           },

@@ -92,16 +92,8 @@ module Util = {
 
 module U = Util;
 
-module Element = {
-  type element =
-    | Text(string)
-    | Element{
-        tag: string,
-        attributes: list(attribute),
-        children: list(element),
-      }
-
-  and attribute =
+module Attribute = {
+  type t =
     | KeyValue{
         key: string,
         value: string,
@@ -110,6 +102,24 @@ module Element = {
 
   let attr = (key, value) => KeyValue({key, value: U.encodeHtml(value)});
   let flag = key => Boolean(key);
+  let toString =
+    Printf.(
+      fun
+      | KeyValue({key, value}) => sprintf("%s=\"%s\"", key, value)
+      | Boolean(k) => sprintf("%s", k)
+    );
+};
+module A = Attribute;
+
+module Element = {
+  type t =
+    | Text(string)
+    | Element{
+        tag: string,
+        attributes: list(Attribute.t),
+        children: list(t),
+      };
+
   let text = txt => Text(U.encodeHtml(txt));
   let rawText = txt => Text(txt);
   let emptyText = rawText("");
@@ -135,13 +145,7 @@ module Element = {
     | [] => buf += "<" += tag +! ">"
     | _ =>
       buf += "<" +! tag;
-      List.iter(
-        fun
-        | KeyValue({key, value}) =>
-          buf += " " += key += "=\"" += value +! "\""
-        | Boolean(k) => buf += " " +! k,
-        attributes,
-      );
+      List.iter(a => buf += " " +! A.toString(a), attributes);
       buf +! ">";
     };
   }

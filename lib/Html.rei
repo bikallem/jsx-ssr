@@ -17,6 +17,8 @@ module Attribute: {
   /* Creates a flag attribute, i.e. attributes that don't have a value, eg.
      'checked'. */
   let flag: string => t;
+
+  let toString: t => string;
 };
 
 module A = Attribute;

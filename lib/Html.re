@@ -140,7 +140,7 @@ module Element = {
 
   let bufSize = 1024;
 
-  let rec renderElementTag = (buf, tag, attributes) => {
+  let renderElementTag = (buf, tag, attributes) => {
     switch (attributes) {
     | [] => buf += "<" += tag +! ">"
     | _ =>
@@ -148,9 +148,9 @@ module Element = {
       List.iter(a => buf += " " +! A.toString(a), attributes);
       buf +! ">";
     };
-  }
+  };
 
-  and renderElement = (indentLevel, buf, element) => {
+  let rec renderElement = (indentLevel, buf, element) => {
     let indentSize = 4;
     let sp = String.make(indentSize * indentLevel, ' ');
     let closeTag = (buf, tag) => buf += "</" += tag +! ">\n";

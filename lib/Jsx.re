@@ -45,7 +45,7 @@ let rec mapChildren = e =>
     let tuple =
       switch (tuple) {
       | [{pexp_desc: Pexp_constant(_), _} as car, cdr] =>
-        let mapper = expr => [%expr Html.text([%e expr])];
+        let mapper = expr => [%expr Html.View.text([%e expr])];
         [mapConstExpr(mapper, car), mapChildren(cdr)];
       | [car, cdr] => [car, mapChildren(cdr)]
       | x => x
@@ -92,7 +92,7 @@ let mapExpression = (mapper, e) =>
             let key = attr |> mapAttributeName |> strExpr;
             let value = mapConstExpr(e => e, value);
             %expr
-            [Html.attr([%e key], [%e value]), ...[%e acc]];
+            [Html.View.attr([%e key], [%e value]), ...[%e acc]];
           | (Nolabel, _)
           | (Optional(_), _) => failwith("Invalid attribute")
           },
@@ -111,7 +111,7 @@ let mapExpression = (mapper, e) =>
       |> mapChildren;
 
     %expr
-    Html.createElement(
+    Html.View.createElement(
       [%e strExpr(html_tag)],
       [%e attributes],
       ~children=[%e default_mapper.expr(mapper, children)],

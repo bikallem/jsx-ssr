@@ -1,7 +1,6 @@
 open Jsx_ssr;
-
-module V = Html.View;
+open Jsx_ssr.Html;
 
 let createElement = (~name, ~children as _) => {
-  <div style="color:red"> {Html.V.text("Hello World " ++ name ++ "!")} </div>;
+  <div style="color:red"> {E.text("Hello World " ++ name ++ "!")} </div>;
 };

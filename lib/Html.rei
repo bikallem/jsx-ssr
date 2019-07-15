@@ -1,6 +1,17 @@
+module Util: {
+  /* Html encodes the given text.
+
+      Additionally, illegal characters as defined in
+      http://en.wikipedia.org/wiki/Character_encodings_in_HTML and
+      http://www.w3.org/TR/html5/syntax.html
+      are normalised.
+     */
+  let encodeHtml: string => string;
+};
+
 /** Html module represents a HtmlJSX view engine. **/
 
-module View: {
+module Element: {
   /* Represents a html node, e.g. div, span, p etc. */
   type element;
 
@@ -42,15 +53,6 @@ module View: {
   let createElement:
     (string, list(attribute), ~children: list(element)=?, unit) => element;
 
-  /* Html encodes the given text.
-
-      Additionally, illegal characters as defined in
-      http://en.wikipedia.org/wiki/Character_encodings_in_HTML and
-      http://www.w3.org/TR/html5/syntax.html
-      are normalised.
-     */
-  let encodeHtml: string => string;
-
   /* Renders a given element as a Html document string, i.e. html doc
      declaration are printed, eg. "<!DOCTYPE html>" */
   let renderAsDoc: element => string;
@@ -59,4 +61,4 @@ module View: {
   let render: element => string;
 };
 
-module V = View;
+module E = Element;

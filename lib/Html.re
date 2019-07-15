@@ -1,19 +1,4 @@
-module View = {
-  type element =
-    | Text(string)
-    | Element{
-        tag: string,
-        attributes: list(attribute),
-        children: list(element),
-      }
-
-  and attribute =
-    | KeyValue{
-        key: string,
-        value: string,
-      }
-    | Boolean(string);
-
+module Util = {
   /* Returns Some(i) if the given text contains a character that needs to be
      html encoded. 'i' is the 0-based index where the first such character is
      found. */
@@ -103,14 +88,33 @@ module View = {
     | None => text
     };
   };
+};
 
-  let attr = (key, value) => KeyValue({key, value: encodeHtml(value)});
+module U = Util;
+
+module Element = {
+  type element =
+    | Text(string)
+    | Element{
+        tag: string,
+        attributes: list(attribute),
+        children: list(element),
+      }
+
+  and attribute =
+    | KeyValue{
+        key: string,
+        value: string,
+      }
+    | Boolean(string);
+
+  let attr = (key, value) => KeyValue({key, value: U.encodeHtml(value)});
   let flag = key => Boolean(key);
-  let text = txt => Text(encodeHtml(txt));
+  let text = txt => Text(U.encodeHtml(txt));
   let rawText = txt => Text(txt);
   let emptyText = rawText("");
   let comment = txt =>
-    Text(encodeHtml(txt) |> Printf.sprintf("<!-- %s -->"));
+    Text(U.encodeHtml(txt) |> Printf.sprintf("<!-- %s -->"));
   let char = char => text @@ String.make(1, char);
   let int = int => text @@ string_of_int(int);
   let float = float => text @@ string_of_float(float);
@@ -179,4 +183,4 @@ module View = {
   };
 };
 
-module V = View;
+module E = Element;

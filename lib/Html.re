@@ -94,10 +94,10 @@ module U = Util;
 
 module Attribute = {
   type t =
-    | KeyValue{
+    | KeyValue({
         key: string,
         value: string,
-      }
+      })
     | Boolean(string);
 
   let attr = (key, value) => KeyValue({key, value: U.encodeHtml(value)});
@@ -114,11 +114,11 @@ module A = Attribute;
 module Element = {
   type t =
     | Text(string)
-    | Element{
+    | Element({
         tag: string,
         attributes: list(Attribute.t),
         children: list(t),
-      };
+      });
 
   let text = txt => Text(U.encodeHtml(txt));
   let rawText = txt => Text(txt);

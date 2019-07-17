@@ -10,7 +10,7 @@
     "all": "esy dune build @all"
   },
   "dependencies": {
-    "@esy-ocaml/reason": "*",
+    "@esy-ocaml/reason": "3.5",
     "@opam/camomile": "*",
     "@opam/fmt": "0.8.6",
     "@opam/ocaml-migrate-parsetree": "*",

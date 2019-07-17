@@ -12,11 +12,10 @@ build: [
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
 depends: [
-  "ocaml"         {>= "4.02" & < "4.08"}
+  "ocaml"         {>= "4.02" & < "4.09"}
   "dune"          {>= "1.4"}
-  "ocamlfind"     {build}
   "menhir"        {>= "20170418"}
-  "merlin-extend" {>= "0.3"}
+  "merlin-extend" {>= "0.4"}
   "result"
   "ocaml-migrate-parsetree"
 ]
@@ -26,6 +25,6 @@ Reason gives OCaml a new syntax that is remniscient of languages like
 JavaScript. It's also the umbrella project for a set of tools for the OCaml &
 JavaScript ecosystem."""
 url {
-  src: "https://registry.npmjs.org/@esy-ocaml/reason/-/reason-3.4.0.tgz"
-  checksum: "md5=1b6cba03588e5fba3b5eb693c0d02dea"
+  src: "https://registry.npmjs.org/@esy-ocaml/reason/-/reason-3.5.0.tgz"
+  checksum: "md5=db3431720b9c26ea10b938c1fa08289c"
 }

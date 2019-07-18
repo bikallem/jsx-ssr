@@ -1,4 +1,4 @@
-open Jsx_ssr;
+open Jsx_ssr.Html;
 
 /* Sample DOM createElement creation of the following html createElement.
       <div id="container">
@@ -9,47 +9,45 @@ open Jsx_ssr;
       </div>;
    */
 let block1 = {
-  open Html;
-
   let input1 =
-    createElement(
+    E.createElement(
       "input",
-      [attr("value", "foo"), attr("type", "text")],
+      [A.attr("value", "foo"), A.attr("type", "text")],
       (),
     );
   let input2 =
-    createElement(
+    E.createElement(
       "input",
-      [attr("type", "checkbox"), flag("checked")],
+      [A.attr("type", "checkbox"), A.flag("checked")],
       (),
     );
   let a =
-    createElement(
+    E.createElement(
       "a",
-      [attr("href", "/bar")],
-      ~children=[text("bar")],
+      [A.attr("href", "/bar")],
+      ~children=[E.text("bar")],
       (),
     );
   let span =
-    createElement(
+    E.createElement(
       "span",
-      [attr("onclick", "myFunction('james')")],
-      ~children=[text("Click Me!")],
+      [A.attr("onclick", "myFunction('james')")],
+      ~children=[E.text("Click Me!")],
       (),
     );
   let button =
-    createElement(
+    E.createElement(
       "button",
-      [attr("onclick", "alert('Hello World')")],
-      ~children=[text("Click Me!")],
+      [A.attr("onclick", "alert('Hello World')")],
+      ~children=[E.text("Click Me!")],
       (),
     );
-  createElement(
+  E.createElement(
     "div",
-    [attr("id", "container1")],
+    [A.attr("id", "container1")],
     ~children=[input1, input2, a, span, button],
     (),
   );
 };
 
-print_endline(Html.renderDocument(block1));
+print_endline(E.renderAsDoc(block1));

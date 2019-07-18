@@ -8,5 +8,6 @@
 
 (executable
  (name HtmlFuncUsage)
+ (public_name HtmlFuncUsage)
  (modules HtmlFuncUsage)
  (libraries jsx-ssr))

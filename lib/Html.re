@@ -75,11 +75,10 @@ module Util = {
   let encodeHtml = text => {
     let len = String.length(text);
     switch (indextOfFirstEncodingChar(text)) {
-    | Some(i) =>
+    | Some(pos) =>
       let buffer = Buffer.create(len);
       Uutf.String.fold_utf_8(
-        ~pos=i,
-        ~len,
+        ~pos,
         (_, _, ch) => encodeChar(buffer, ch),
         (),
         text,

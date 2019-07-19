@@ -44,8 +44,8 @@ let rec first_match l1 = function
 let start_https_server () =
   let open Lwt.Infix in
   let listen_address = Unix.(ADDR_INET (inet_addr_loopback, 9443)) in
-  let cert = "./certificates/localhost.crt" in
-  let priv_key = "./certificates/localhost.key" in
+  let cert = "./examples/alpn/certificates/localhost.crt" in
+  let priv_key = "./examples/alpn/certificates/localhost.key" in
   Lwt.async (fun () ->
       Lwt_io.establish_server_with_client_socket
         listen_address

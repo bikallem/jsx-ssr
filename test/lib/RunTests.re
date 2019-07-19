@@ -1,0 +1,1 @@
+JsxTest.TestFramework.cli();

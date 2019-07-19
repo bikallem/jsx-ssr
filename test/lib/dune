@@ -1,0 +1,14 @@
+(library
+ (name JsxTest)
+ (public_name jsx-ssr.test)
+ (ocamlopt_flags -linkall -g)
+ (libraries rely.lib jsx-ssr)
+ (modules
+  (:standard \ RunTests)))
+
+(executable
+ (package jsx-ssr)
+ (name RunTests)
+ (public_name RunTests.exe)
+ (libraries jsx-ssr.test)
+ (modules RunTests))

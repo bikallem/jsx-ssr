@@ -1,4 +1,4 @@
-open Jsx_ssr.Html;
+open Jsx_ssr;
 
 /* Sample DOM createElement creation of the following html createElement.
       <div id="container">
@@ -10,44 +10,44 @@ open Jsx_ssr.Html;
    */
 let block1 = {
   let input1 =
-    E.createElement(
+    Html.createElement(
       "input",
-      [A.attr("value", "foo"), A.attr("type", "text")],
+      [Attribute.attr("value", "foo"), Attribute.attr("type", "text")],
       (),
     );
   let input2 =
-    E.createElement(
+    Html.createElement(
       "input",
-      [A.attr("type", "checkbox"), A.flag("checked")],
+      [Attribute.attr("type", "checkbox"), Attribute.flag("checked")],
       (),
     );
   let a =
-    E.createElement(
+    Html.createElement(
       "a",
-      [A.attr("href", "/bar")],
-      ~children=[E.text("bar")],
+      [Attribute.attr("href", "/bar")],
+      ~children=[Html.text("bar")],
       (),
     );
   let span =
-    E.createElement(
+    Html.createElement(
       "span",
-      [A.attr("onclick", "myFunction('james')")],
-      ~children=[E.text("Click Me!")],
+      [Attribute.attr("onclick", "myFunction('james')")],
+      ~children=[Html.text("Click Me!")],
       (),
     );
   let button =
-    E.createElement(
+    Html.createElement(
       "button",
-      [A.attr("onclick", "alert('Hello World')")],
-      ~children=[E.text("Click Me!")],
+      [Attribute.attr("onclick", "alert('Hello World')")],
+      ~children=[Html.text("Click Me!")],
       (),
     );
-  E.createElement(
+  Html.createElement(
     "div",
-    [A.attr("id", "container1")],
+    [Attribute.attr("id", "container1")],
     ~children=[input1, input2, a, span, button],
     (),
   );
 };
 
-print_endline(E.renderAsDoc(block1));
+print_endline(Html.renderAsDoc(block1));

@@ -1,7 +1,7 @@
 {
   "name": "jsx-ssr",
   "version": "0.0.0",
-  "description": "PPX experiments in ocaml/reasonml.",
+  "description": "Enables reasonml JSX to render on the Server without nodejs.",
   "esy": { "build": "refmterr dune build -p #{self.name} -j4" },
   "scripts": {
     "fmt": "esy dune build @fmt --auto-promote",
@@ -10,21 +10,23 @@
     "all": "esy dune build @all"
   },
   "dependencies": {
-    "reason": "facebook/reason#master",
-    "@opam/fmt": "0.8.6",
+    "@opam/reason": "*",
+    "@opam/fmt": "*",
     "@opam/ocaml-migrate-parsetree": "*",
-    "@opam/ppx_tools_versioned": "5.2.2",
-    "@opam/uutf": "1.0.2",
+    "@opam/ppx_tools_versioned": "*",
+    "@opam/uutf": "*",
     "@reason-native/console": "*",
     "@reason-native/rely": "*",
-    "ocaml": "4.7.1"
+    "ocaml": "4.8.1000"
   },
   "devDependencies": {
     "@opam/merlin": "*",
     "@opam/ocamlformat": "*",
-    "@opam/rtop": "*",
     "@opam/utop": "*",
     "refmterr": "*",
     "@opam/dune": "*"
+  },
+  "resolutions": {
+    "@opam/reason": "facebook/reason:reason.opam#281e433714f9dad72eee7ea7e587a46449a02525"
   }
 }

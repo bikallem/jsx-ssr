@@ -28,7 +28,7 @@ let encodeChar = (buffer, ch) =>
   };
 
 let encodeHtml = text => {
-  let buffer = String.length(text) |> Buffer.create;
+  let buffer = Buffer.create @@ String.length(text);
   Uutf.String.fold_utf_8((_, _, ch) => encodeChar(buffer, ch), (), text);
   Buffer.contents(buffer);
 };

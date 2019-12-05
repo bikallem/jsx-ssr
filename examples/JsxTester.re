@@ -25,13 +25,13 @@ let d =
     <span class_=""> <p> "hello" </p> </span>
   </div>;
 
-print_endline(Html.renderAsDoc(d));
+Html.pp(Format.std_formatter, d);
 
 let e = <span className="test2" />;
-print_endline(Html.renderAsDoc(e));
+Html.pp(Format.std_formatter, e);
 
 let m =
   <Custom name="James Bond" className="hello" id="customId1">
     <p> "Hello world" </p>
   </Custom>;
-print_endline(Html.render(m));
+Html.pp(Format.std_formatter, m);

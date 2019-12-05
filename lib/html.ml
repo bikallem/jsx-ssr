@@ -5,52 +5,34 @@ type t =
       ; attributes : Attribute.t list
       ; children : t list }
 
-let text txt = Text (Encoder.encodeHtml txt)
-let rawText txt = Text txt
-let emptyText = rawText ""
-let comment txt = Text (Encoder.encodeHtml txt |> Printf.sprintf "<!-- %s -->")
+let createElement tag attributes ?(children = []) () =
+  Element {tag; attributes; children}
+
+let text txt = Text (Encoder.encode_html txt)
+let raw txt = Text txt
+
+let comment txt = Text (Encoder.encode_html txt |> Printf.sprintf "<!-- %s -->")
+
 let char char = text @@ String.make 1 char
 let int int = text @@ string_of_int int
 let float float = text @@ string_of_float float
 
-let createElement tag attributes ?(children = []) () =
-  Element {tag; attributes; children}
-
-let ( += ) buf text = Buffer.add_string buf text; buf
-let ( +! ) buf text = Buffer.add_string buf text
-let bufSize = 1024
-
-let renderElementTag buf tag attributes =
+let pp_element_tag fmt tag attributes =
   match attributes with
-  | [] -> buf += "<" += tag +! ">"
+  | [] -> Format.fprintf fmt "<%s>" tag
   | _ ->
-    buf += "<" +! tag;
-    List.iter (fun a -> buf += " " +! Attribute.toString a) attributes;
-    buf +! ">"
+    Format.fprintf fmt "<%s" tag;
+    List.iter (fun a -> Format.fprintf fmt " %a" Attribute.pp a) attributes;
+    Format.fprintf fmt ">"
 
-let rec renderElement indentLevel buf element =
-  let indentSize = 4 in
-  let sp = String.make (indentSize * indentLevel) ' ' in
-  let closeTag buf tag = buf += "</" += tag +! ">\n" in
-  match element with
-  | Text s -> buf += sp += s +! "\n"
+let rec pp fmt t =
+  let pp_close_tag fmt tag = Format.fprintf fmt "</%s>" tag in
+  match t with
+  | Text s -> Format.fprintf fmt "%s" s
   | Element {tag; attributes; children} -> (
-    renderElementTag (buf += sp) tag attributes;
+    pp_element_tag fmt tag attributes;
     match children with
-    | [] -> closeTag buf tag
+    | [] -> pp_close_tag fmt tag
     | _ ->
-      buf +! "\n";
-      List.iter (fun elem -> renderElement (indentLevel + 1) buf elem) children;
-      buf +! sp;
-      closeTag buf tag )
-
-let renderAsDoc element =
-  let buf = Buffer.create bufSize in
-  buf +! "<!DOCTYPE html>\n";
-  renderElement 0 buf element;
-  Buffer.contents buf
-
-let render element =
-  let buf = Buffer.create bufSize in
-  renderElement 0 buf element;
-  Buffer.contents buf
+      List.iter (fun elem -> pp fmt elem) children;
+      pp_close_tag fmt tag )

@@ -50,4 +50,4 @@ let block1 = {
   );
 };
 
-print_endline(Html.renderAsDoc(block1));
+Html.pp(Format.std_formatter, block1);

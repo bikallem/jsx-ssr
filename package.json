@@ -2,12 +2,12 @@
   "name": "jsx-ssr",
   "version": "0.0.0",
   "description": "Enables reasonml JSX to render on the Server without nodejs.",
-  "esy": { "build": "refmterr dune b -j4" },
+  "esy": { "build": "dune b", "buildsInSource": "_build" },
   "scripts": {
     "fmt": "esy dune b @fmt --auto-promote",
     "test": "esy dune runtest --auto-promote",
     "clean": "esy dune clean",
-    "all": "esy dune build @all"
+    "all": "esy dune b @all"
   },
   "dependencies": {
     "@opam/reason": "*",
@@ -17,8 +17,8 @@
     "@opam/uutf": "*",
     "@reason-native/console": "*",
     "@reason-native/rely": "*",
-    "ocaml": "4.8.1000",
-    "@opam/dune": "*"
+    "@opam/dune": "*",
+    "ocaml": "4.8.1000"
   },
   "devDependencies": {
     "@opam/merlin": "*",

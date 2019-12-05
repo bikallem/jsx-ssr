@@ -4,11 +4,9 @@ type t =
       ; value : string }
   | Boolean of string
 
-let attr key value = KeyValue {key; value = Encoder.encodeHtml value}
+let attr key value = KeyValue {key; value = Encoder.encode_html value}
 let flag key = Boolean key
 
-let toString =
-  let open Printf in
-  function
-  | KeyValue {key; value} -> sprintf "%s=\"%s\"" key value
-  | Boolean k -> sprintf "%s" k
+let pp fmt = function
+  | KeyValue {key; value} -> Format.fprintf fmt "%s=\"%s\"" key value
+  | Boolean k -> Format.fprintf fmt "%s" k

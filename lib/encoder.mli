@@ -1,1 +1,1 @@
-val encodeHtml : string -> string
+val encode_html : string -> string

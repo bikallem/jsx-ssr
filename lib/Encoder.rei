@@ -1,0 +1,1 @@
+let encodeHtml: string => string;

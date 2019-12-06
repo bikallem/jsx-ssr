@@ -2,7 +2,7 @@
   "name": "jsx-ssr",
   "version": "0.0.0",
   "description": "Enables reasonml JSX to render on the Server without nodejs.",
-  "esy": { "build": "dune b", "buildsInSource": "_build" },
+  "esy": { "build": "refmterr dune build -p #{self.name} -j4" },
   "scripts": {
     "fmt": "esy dune b @fmt --auto-promote",
     "test": "esy dune runtest --auto-promote",

@@ -21,17 +21,20 @@ let float = float => text @@ string_of_float(float);
 
 let ppElement = (fmt, tag, attributes) =>
   switch (attributes) {
-  | [] => Format.fprintf(fmt, "<%s>", tag)
+  | [] => Format.fprintf(fmt, "<%s>@.", tag)
   | _ =>
-    Format.fprintf(fmt, "<%s", tag);
-    List.iter(a => Format.fprintf(fmt, " %a", Attribute.pp, a), attributes);
-    Format.fprintf(fmt, ">");
+    Format.fprintf(fmt, "<%s@.", tag);
+    List.iter(
+      a => Format.fprintf(fmt, " %a@.", Attribute.pp, a),
+      attributes,
+    );
+    Format.fprintf(fmt, ">@.");
   };
 
 let rec pp = (fmt, t) => {
-  let ppCloseTag = (fmt, tag) => Format.fprintf(fmt, "</%s>", tag);
+  let ppCloseTag = (fmt, tag) => Format.fprintf(fmt, "</%s>@.", tag);
   switch (t) {
-  | Text(s) => Format.fprintf(fmt, "%s", s)
+  | Text(s) => Format.fprintf(fmt, "%s@.", s)
   | Element({tag, attributes, children}) =>
     ppElement(fmt, tag, attributes);
     switch (children) {
